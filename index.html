@@ -3,12 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Teen Summit — Business Basics Quiz</title>
-
-  <!-- Tailwind via CDN -->
+  <title>Teen Summit — Business Basics</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-900">
@@ -17,396 +13,222 @@
       <div class="h-10 w-10 rounded-2xl bg-slate-900 text-white grid place-items-center font-black">TS</div>
       <div class="flex-1">
         <h1 class="text-lg sm:text-xl font-semibold leading-tight">Teen Summit — Business Basics</h1>
-        <p class="text-xs sm:text-sm text-slate-600">Join with a Host ID • Answer 5 questions • Shared live counts</p>
+        <p class="text-xs sm:text-sm text-slate-600">Answer 5 questions • Shared counts update automatically</p>
       </div>
-      <div class="hidden sm:flex items-center gap-2">
-        <span id="hostBadge" class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-sm font-medium">Host: —</span>
-        <button id="copyLinkBtn" class="px-3 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 active:scale-[0.99]">
-          Copy Link
-        </button>
-      </div>
+      <span id="hostBadge" class="hidden sm:inline px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-sm font-medium">Host: —</span>
     </div>
   </header>
 
   <main class="mx-auto max-w-5xl px-4 py-6">
-    <!-- Join -->
-    <section id="joinSection" class="grid gap-4">
-      <div class="rounded-2xl border bg-white p-5 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-end gap-3">
-          <div class="flex-1">
-            <label class="block text-sm font-semibold text-slate-700">Host ID</label>
-            <div class="mt-2 flex gap-2">
-              <input id="hostIdInput" class="w-full rounded-xl border px-4 py-3 text-base outline-none focus:ring-2 focus:ring-slate-900/20"
-                     placeholder="Try: biz101 or msbiz" />
-              <button id="joinBtn" class="shrink-0 rounded-xl bg-slate-900 px-4 py-3 text-white font-semibold hover:bg-slate-800 active:scale-[0.99]">
-                Join
-              </button>
-            </div>
-            <p class="mt-2 text-xs text-slate-600">
-              Tip: You can also open <span class="font-mono bg-slate-100 px-1 py-0.5 rounded">?host=biz101</span> in the URL.
-            </p>
-          </div>
-          <div class="rounded-2xl bg-slate-900 text-white p-4 sm:w-72">
-            <div class="text-xs uppercase tracking-wide text-slate-200">Shared stats</div>
-            <ul class="mt-2 text-sm text-slate-100 space-y-1 list-disc list-inside">
-              <li>Counts are shared for everyone.</li>
-              <li>Same Host ID = same “room”.</li>
-              <li>Stored in Vercel KV via /api.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="rounded-2xl border bg-white p-5 shadow-sm">
-        <h2 class="text-base font-semibold">Quick Hosts</h2>
-        <p class="text-sm text-slate-600 mt-1">Tap to load a quiz set.</p>
-        <div class="mt-4 flex flex-wrap gap-2">
-          <button class="quickHost px-4 py-2 rounded-xl border bg-slate-50 hover:bg-slate-100 font-semibold" data-host="biz101">biz101</button>
-          <button class="quickHost px-4 py-2 rounded-xl border bg-slate-50 hover:bg-slate-100 font-semibold" data-host="msbiz">msbiz</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Quiz -->
-    <section id="quizSection" class="hidden">
-      <div class="grid lg:grid-cols-5 gap-4">
-        <!-- Question -->
-        <div class="lg:col-span-3 rounded-2xl border bg-white p-5 shadow-sm">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <div class="text-xs uppercase tracking-wide text-slate-500">Question <span id="qIndex">1</span> of <span id="qTotal">5</span></div>
-              <h2 id="qText" class="mt-1 text-xl font-bold leading-snug">—</h2>
-            </div>
-            <div class="text-right">
-              <div class="text-xs uppercase tracking-wide text-slate-500">Score</div>
-              <div class="text-2xl font-black"><span id="score">0</span>/<span id="scoreTotal">5</span></div>
-            </div>
-          </div>
-
-          <div id="answersGrid" class="mt-5 grid sm:grid-cols-2 gap-3"></div>
-
-          <div class="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div id="feedback" class="text-sm font-semibold"></div>
-            <div class="flex gap-2">
-              <button id="prevBtn" class="px-4 py-2 rounded-xl border bg-white hover:bg-slate-50 font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
-                Back
-              </button>
-              <button id="nextBtn" class="px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Counts -->
-        <div class="lg:col-span-2 rounded-2xl border bg-white p-5 shadow-sm">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-xs uppercase tracking-wide text-slate-500">Shared Answer Counts</div>
-              <h3 class="text-base font-semibold">Teen Summit Board</h3>
-            </div>
-            <button id="resetCountsBtn" class="text-xs font-semibold px-3 py-2 rounded-xl border hover:bg-slate-50">
-              Reset Counts
-            </button>
-          </div>
-
-          <div class="mt-4">
-            <canvas id="countsChart" height="180"></canvas>
-          </div>
-
-          <div class="mt-4 rounded-2xl bg-slate-50 border p-4">
-            <div class="text-xs uppercase tracking-wide text-slate-500">Progress</div>
-            <div class="mt-2 h-3 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div id="progressBar" class="h-full bg-slate-900 w-0"></div>
-            </div>
-            <div class="mt-2 text-sm text-slate-700">
-              Answered: <span id="answeredCount" class="font-semibold">0</span>/<span id="answeredTotal" class="font-semibold">5</span>
-            </div>
-          </div>
-
-          <div class="mt-4 flex flex-col gap-2">
-            <button id="restartBtn" class="px-4 py-3 rounded-xl border bg-white hover:bg-slate-50 font-semibold">
-              Restart Quiz
-            </button>
-            <button id="backToJoinBtn" class="px-4 py-3 rounded-xl bg-slate-900 text-white hover:bg-slate-800 font-semibold">
-              Change Host
-            </button>
-          </div>
-
-          <p class="mt-4 text-xs text-slate-500">
-            These counts are shared for everyone using the same Host ID (stored by the backend).
-          </p>
-        </div>
-      </div>
-
-      <div id="endSection" class="hidden mt-4 rounded-2xl border bg-white p-5 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <section class="grid lg:grid-cols-5 gap-4">
+      <div class="lg:col-span-3 rounded-2xl border bg-white p-5 shadow-sm">
+        <div class="flex items-start justify-between gap-3">
           <div>
-            <h3 class="text-xl font-bold">You finished!</h3>
-            <p class="text-slate-600">Teen Summit complete — nice work.</p>
+            <div class="text-xs uppercase tracking-wide text-slate-500">Question <span id="qIndex">1</span> of <span id="qTotal">5</span></div>
+            <h2 id="qText" class="mt-1 text-xl font-bold leading-snug">—</h2>
           </div>
           <div class="text-right">
-            <div class="text-xs uppercase tracking-wide text-slate-500">Final Score</div>
-            <div class="text-3xl font-black"><span id="finalScore">0</span>/<span id="finalTotal">5</span></div>
+            <div class="text-xs uppercase tracking-wide text-slate-500">Score</div>
+            <div class="text-2xl font-black"><span id="score">0</span>/<span id="scoreTotal">5</span></div>
+          </div>
+        </div>
+
+        <div id="answersGrid" class="mt-5 grid sm:grid-cols-2 gap-3"></div>
+
+        <div class="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div id="feedback" class="text-sm font-semibold"></div>
+          <div class="flex gap-2">
+            <button id="prevBtn" class="px-4 py-2 rounded-xl border bg-white hover:bg-slate-50 font-semibold disabled:opacity-50" disabled>Back</button>
+            <button id="nextBtn" class="px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 font-semibold disabled:opacity-50" disabled>Next</button>
           </div>
         </div>
       </div>
-    </section>
 
-    <section id="errorSection" class="hidden">
-      <div class="rounded-2xl border border-red-200 bg-red-50 p-5 text-red-900">
-        <div class="font-bold">Host ID not found</div>
-        <p class="mt-1 text-sm">Try <span class="font-mono bg-white/60 px-1 rounded">biz101</span> or <span class="font-mono bg-white/60 px-1 rounded">msbiz</span>.</p>
+      <div class="lg:col-span-2 rounded-2xl border bg-white p-5 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs uppercase tracking-wide text-slate-500">Shared Answer Counts</div>
+            <h3 class="text-base font-semibold">Teen Summit Board</h3>
+          </div>
+          <label class="flex items-center gap-2 text-xs font-semibold">
+            <input id="pollToggle" type="checkbox" class="accent-slate-900" checked />
+            Auto-update
+          </label>
+        </div>
+
+        <div class="mt-4">
+          <canvas id="countsChart" height="180"></canvas>
+        </div>
+
+        <div class="mt-4 rounded-2xl bg-slate-50 border p-4">
+          <div class="text-xs uppercase tracking-wide text-slate-500">Progress</div>
+          <div class="mt-2 h-3 w-full rounded-full bg-slate-200 overflow-hidden">
+            <div id="progressBar" class="h-full bg-slate-900 w-0"></div>
+          </div>
+          <div class="mt-2 text-sm text-slate-700">
+            Answered: <span id="answeredCount" class="font-semibold">0</span>/<span id="answeredTotal" class="font-semibold">5</span>
+          </div>
+          <div class="mt-2 text-xs text-slate-500">
+            Your ID: <span id="clientBadge" class="font-mono"></span> • Tab: <span id="tabBadge" class="font-mono"></span>
+          </div>
+        </div>
+
+        <div id="endSection" class="hidden mt-4 rounded-2xl border bg-white p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-xl font-bold">Finished!</h3>
+              <p class="text-slate-600">Nice work.</p>
+            </div>
+            <div class="text-right">
+              <div class="text-xs uppercase tracking-wide text-slate-500">Final</div>
+              <div class="text-3xl font-black"><span id="finalScore">0</span>/<span id="finalTotal">5</span></div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
   <script>
-    /***********************
-     * Quiz sets by Host ID
-     ***********************/
-    const QUIZ_DATA = {
-      biz101: {
-        title: "Teen Summit — Business Basics (biz101)",
-        questions: [
-          {
-            text: "What is a business?",
-            choices: [
-              "A way to trade goods or services for money (or value)",
-              "A school subject you only study in college",
-              "A hobby you do for free",
-              "A job where you only do chores"
-            ],
-            correctIndex: 0
-          },
-          {
-            text: "Which is the BEST example of a business for a middle schooler?",
-            choices: [
-              "Mowing lawns for neighbors and charging a price",
-              "Doing homework for free every day",
-              "Watching videos after school",
-              "Borrowing money and never paying it back"
-            ],
-            correctIndex: 0
-          },
-          {
-            text: "Which is something a business needs that a job usually does NOT require from you?",
-            choices: [
-              "Planning how to get customers",
-              "Showing up on time",
-              "Being respectful",
-              "Learning new skills"
-            ],
-            correctIndex: 0
-          },
-          {
-            text: "What does “profit” mean?",
-            choices: [
-              "Money left after costs are paid",
-              "All the money you earn before paying costs",
-              "A business license",
-              "A fancy logo"
-            ],
-            correctIndex: 0
-          },
-          {
-            text: "What is a smart FIRST step to start a business?",
-            choices: [
-              "Find a problem to solve or a need people have",
-              "Buy the most expensive supplies right away",
-              "Copy someone’s work exactly",
-              "Skip asking customers what they want"
-            ],
-            correctIndex: 0
-          }
-        ]
-      },
-
-      msbiz: {
-        title: "Teen Summit — Start & Run a Business (msbiz)",
-        questions: [
-          {
-            text: "A business is different from a job because…",
-            choices: [
-              "A business owner finds customers and sets prices",
-              "A job never pays money",
-              "A business is only online",
-              "A job means you can’t learn skills"
-            ],
-            correctIndex: 0
-          },
-          {
-            text: "What is a “customer”?",
-            choices: [
-              "A person who buys your product or service",
-              "Someone who watches you work",
-              "A friend who helps you for free",
-              "The person who makes your homework"
-            ],
-            correctIndex: 0
-          },
-          {
-            text: "If your lemonade costs $0.50 per cup to make and you sell it for $1.50, what is your profit per cup?",
-            choices: [
-              "$1.00",
-              "$2.00",
-              "$0.50",
-              "$0.00"
-            ],
-            correctIndex: 0
-          },
-          {
-            text: "Which is a good way to advertise (tell people about your business)?",
-            choices: [
-              "A simple flyer or a post with permission",
-              "Only whispering to one person",
-              "Hiding your business name",
-              "Never explaining what you sell"
-            ],
-            correctIndex: 0
-          },
-          {
-            text: "To run a business well, you should MOSTLY focus on…",
-            choices: [
-              "Solving the customer’s problem and being reliable",
-              "Charging random prices each day",
-              "Skipping supplies and planning",
-              "Arguing with customers"
-            ],
-            correctIndex: 0
-          }
-        ]
-      }
+    // ONE quiz only
+    const QUIZ = {
+      title: "Teen Summit — Business Basics",
+      questions: [
+        {
+          text: "What is a business?",
+          choices: [
+            "A way to trade goods or services for money (or value)",
+            "A school subject you only study in college",
+            "A hobby you do for free",
+            "A job where you only do chores"
+          ],
+          correctIndex: 0
+        },
+        {
+          text: "Which is the BEST example of a business for a middle schooler?",
+          choices: [
+            "Mowing lawns for neighbors and charging a price",
+            "Doing homework for free every day",
+            "Watching videos after school",
+            "Borrowing money and never paying it back"
+          ],
+          correctIndex: 0
+        },
+        {
+          text: "What does “profit” mean?",
+          choices: [
+            "Money left after costs are paid",
+            "All the money you earn before paying costs",
+            "A business license",
+            "A fancy logo"
+          ],
+          correctIndex: 0
+        },
+        {
+          text: "Which is a smart FIRST step to start a business?",
+          choices: [
+            "Find a problem to solve or a need people have",
+            "Buy expensive supplies right away",
+            "Skip asking customers what they want",
+            "Set random prices each day"
+          ],
+          correctIndex: 0
+        },
+        {
+          text: "A business is different from a job because…",
+          choices: [
+            "A business owner finds customers and sets prices",
+            "A job never pays money",
+            "A business is only online",
+            "A job means you can’t learn skills"
+          ],
+          correctIndex: 0
+        }
+      ]
     };
 
-    /***********************
-     * API helpers (shared)
-     ***********************/
-    async function apiGetCounts(host, q, choiceCount) {
-      const url = `/api/stats?host=${encodeURIComponent(host)}&q=${q}&choiceCount=${choiceCount}`;
-      const r = await fetch(url);
-      if (!r.ok) throw new Error(`GET stats failed (${r.status})`);
-      return r.json(); // { counts: [...] }
-    }
+    const $ = (id) => document.getElementById(id);
 
-    async function apiVote(host, q, choice, choiceCount) {
-      const r = await fetch("/api/stats", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ host, q, choice, choiceCount })
-      });
-      if (!r.ok) throw new Error(`POST vote failed (${r.status})`);
-      return r.json(); // { counts: [...] }
-    }
+    // Host defaults to teensummit, optional ?host=classA
+    const url = new URL(window.location.href);
+    const host = (url.searchParams.get("host") || "teensummit").trim();
 
-    async function apiResetHost(host, questionCount, choiceCounts) {
-      // If you did not add /api/reset.js, remove this feature.
-      const r = await fetch("/api/reset", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ host, questionCount, choiceCounts })
-      });
-      if (!r.ok) throw new Error(`POST reset failed (${r.status})`);
+    // ClientId (stable) + TabId (per tab)
+    function ensureId(storage, key) {
+      let v = storage.getItem(key);
+      if (!v) {
+        v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now());
+        storage.setItem(key, v);
+      }
+      return v;
+    }
+    const clientId = ensureId(localStorage, "teen_summit_client_id");
+    const tabId = ensureId(sessionStorage, "teen_summit_tab_id");
+
+    $("hostBadge").textContent = `Host: ${host}`;
+    $("clientBadge").textContent = clientId.slice(0, 8);
+    $("tabBadge").textContent = tabId.slice(0, 8);
+
+    async function apiGetCounts(q, choiceCount) {
+      const r = await fetch(`/api/stats?host=${encodeURIComponent(host)}&q=${q}&choiceCount=${choiceCount}`);
+      if (!r.ok) throw new Error("GET failed");
       return r.json();
     }
 
-    /***********************
-     * UI + state
-     ***********************/
-    const $ = (id) => document.getElementById(id);
+    async function apiVote(q, choice, choiceCount) {
+      const r = await fetch("/api/stats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ host, q, choice, choiceCount, clientId, tabId })
+      });
+      if (!r.ok) throw new Error("POST failed");
+      return r.json();
+    }
 
-    const joinSection = $("joinSection");
-    const quizSection = $("quizSection");
-    const errorSection = $("errorSection");
-    const endSection = $("endSection");
-
-    const hostBadge = $("hostBadge");
-    const hostIdInput = $("hostIdInput");
-    const joinBtn = $("joinBtn");
-    const copyLinkBtn = $("copyLinkBtn");
-
-    const qIndexEl = $("qIndex");
-    const qTotalEl = $("qTotal");
-    const qTextEl = $("qText");
-    const answersGrid = $("answersGrid");
-    const feedbackEl = $("feedback");
-
-    const scoreEl = $("score");
-    const scoreTotalEl = $("scoreTotal");
-    const finalScoreEl = $("finalScore");
-    const finalTotalEl = $("finalTotal");
-
-    const prevBtn = $("prevBtn");
-    const nextBtn = $("nextBtn");
-    const restartBtn = $("restartBtn");
-    const backToJoinBtn = $("backToJoinBtn");
-    const resetCountsBtn = $("resetCountsBtn");
-
-    const progressBar = $("progressBar");
-    const answeredCountEl = $("answeredCount");
-    const answeredTotalEl = $("answeredTotal");
-
-    let hostId = null;
-    let quiz = null;
     let currentQ = 0;
-    let answers = [];
+    let answers = Array.from({ length: QUIZ.questions.length }, () => null);
     let score = 0;
 
-    let countsChart = null;
-    let chartLabels = [];
-
-    function getHostFromUrl() {
-      const url = new URL(window.location.href);
-      return (url.searchParams.get("host") || "").trim();
-    }
-
-    function setHostInUrl(h) {
-      const url = new URL(window.location.href);
-      url.searchParams.set("host", h);
-      history.replaceState({}, "", url.toString());
-    }
+    let chart = null;
+    let pollTimer = null;
 
     function computeScore() {
       score = 0;
-      quiz.questions.forEach((q, idx) => {
-        if (answers[idx] === q.correctIndex) score += 1;
+      QUIZ.questions.forEach((q, i) => {
+        if (answers[i] === q.correctIndex) score++;
       });
     }
 
     function answeredCount() {
-      return answers.filter(a => a !== null && a !== undefined).length;
+      return answers.filter(v => v !== null).length;
     }
 
-    function isFinished() {
-      return answeredCount() === quiz.questions.length;
-    }
-
-    function updateProgressUI() {
-      const total = quiz.questions.length;
+    function updateProgress() {
       const done = answeredCount();
-      answeredCountEl.textContent = String(done);
-      answeredTotalEl.textContent = String(total);
-      progressBar.style.width = `${Math.round((done / total) * 100)}%`;
+      const total = QUIZ.questions.length;
+      $("answeredCount").textContent = String(done);
+      $("answeredTotal").textContent = String(total);
+      $("progressBar").style.width = `${Math.round((done / total) * 100)}%`;
+
+      $("endSection").classList.toggle("hidden", done !== total);
+      if (done === total) {
+        $("finalScore").textContent = String(score);
+        $("finalTotal").textContent = String(total);
+      }
     }
 
-    async function updateCountsChart() {
-      const q = quiz.questions[currentQ];
-      const choiceCount = q.choices.length;
-
-      // shared counts from backend
-      const payload = await apiGetCounts(hostId, currentQ, choiceCount);
+    async function updateChartFromServer() {
+      const q = QUIZ.questions[currentQ];
+      const payload = await apiGetCounts(currentQ, q.choices.length);
       const counts = payload.counts;
 
-      chartLabels = q.choices.map((_, i) => String.fromCharCode(65 + i));
+      const labels = q.choices.map((_, i) => String.fromCharCode(65 + i));
       const ctx = $("countsChart").getContext("2d");
 
-      if (!countsChart) {
-        countsChart = new Chart(ctx, {
+      if (!chart) {
+        chart = new Chart(ctx, {
           type: "bar",
-          data: {
-            labels: chartLabels,
-            datasets: [{ label: "Answers", data: counts }]
-          },
+          data: { labels, datasets: [{ label: "Answers", data: counts }] },
           options: {
             responsive: true,
             plugins: { legend: { display: false } },
@@ -414,234 +236,128 @@
           }
         });
       } else {
-        countsChart.data.labels = chartLabels;
-        countsChart.data.datasets[0].data = counts;
-        countsChart.update();
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = counts;
+        chart.update();
       }
     }
 
-    async function renderQuestion() {
-      const total = quiz.questions.length;
-      const q = quiz.questions[currentQ];
+    function startPolling() {
+      stopPolling();
+      if (!$("pollToggle").checked) return;
+      pollTimer = setInterval(() => {
+        updateChartFromServer().catch(() => {});
+      }, 1200);
+    }
 
-      qIndexEl.textContent = String(currentQ + 1);
-      qTotalEl.textContent = String(total);
-      qTextEl.textContent = q.text;
+    function stopPolling() {
+      if (pollTimer) clearInterval(pollTimer);
+      pollTimer = null;
+    }
 
-      scoreTotalEl.textContent = String(total);
+    $("pollToggle").addEventListener("change", () => {
+      if ($("pollToggle").checked) startPolling();
+      else stopPolling();
+    });
+
+    async function render() {
+      const q = QUIZ.questions[currentQ];
+      $("qIndex").textContent = String(currentQ + 1);
+      $("qTotal").textContent = String(QUIZ.questions.length);
+      $("qText").textContent = q.text;
+
       computeScore();
-      scoreEl.textContent = String(score);
+      $("score").textContent = String(score);
+      $("scoreTotal").textContent = String(QUIZ.questions.length);
 
-      prevBtn.disabled = currentQ === 0;
-      nextBtn.textContent = (currentQ === total - 1) ? "Finish" : "Next";
-      nextBtn.disabled = answers[currentQ] === null;
+      $("prevBtn").disabled = currentQ === 0;
+      $("nextBtn").textContent = (currentQ === QUIZ.questions.length - 1) ? "Finish" : "Next";
+      $("nextBtn").disabled = answers[currentQ] === null;
 
-      feedbackEl.textContent = "";
-      feedbackEl.className = "text-sm font-semibold";
+      $("feedback").textContent = "";
 
-      answersGrid.innerHTML = "";
-      q.choices.forEach((choiceText, idx) => {
+      // answers
+      const grid = $("answersGrid");
+      grid.innerHTML = "";
+
+      q.choices.forEach((text, idx) => {
         const selected = answers[currentQ] === idx;
-
         const btn = document.createElement("button");
         btn.className =
-          "group text-left rounded-2xl border p-4 transition shadow-sm hover:shadow disabled:opacity-60 " +
-          (selected ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white hover:bg-slate-50");
+          "text-left rounded-2xl border p-4 shadow-sm hover:shadow transition " +
+          (selected ? "bg-slate-900 text-white border-slate-900" : "bg-white border-slate-200 hover:bg-slate-50");
 
         btn.innerHTML = `
           <div class="flex items-start gap-3">
-            <div class="mt-0.5 h-7 w-7 rounded-xl grid place-items-center text-sm font-black
-              ${selected ? "bg-white text-slate-900" : "bg-slate-100 text-slate-900"}">
+            <div class="mt-0.5 h-7 w-7 rounded-xl grid place-items-center text-sm font-black ${selected ? "bg-white text-slate-900" : "bg-slate-100 text-slate-900"}">
               ${String.fromCharCode(65 + idx)}
             </div>
             <div class="flex-1">
-              <div class="font-semibold leading-snug">${choiceText}</div>
-              <div class="mt-1 text-xs ${selected ? "text-slate-200" : "text-slate-500"}">
-                Tap to select
-              </div>
+              <div class="font-semibold leading-snug">${text}</div>
+              <div class="mt-1 text-xs ${selected ? "text-slate-200" : "text-slate-500"}">Tap to select</div>
             </div>
           </div>
         `;
 
         btn.addEventListener("click", () => selectAnswer(idx));
-        answersGrid.appendChild(btn);
+        grid.appendChild(btn);
       });
 
-      updateProgressUI();
+      updateProgress();
 
-      endSection.classList.toggle("hidden", !isFinished());
-      if (isFinished()) {
-        finalScoreEl.textContent = String(score);
-        finalTotalEl.textContent = String(total);
-      }
-
-      // update shared board
-      try {
-        await updateCountsChart();
-      } catch (e) {
-        // If backend isn't set up yet, show an error in feedback area
-        feedbackEl.textContent = "⚠️ Shared stats unavailable. Add Vercel KV + /api routes.";
-        feedbackEl.className = "text-sm font-semibold text-amber-700";
-      }
+      // refresh counts + restart polling for this question
+      await updateChartFromServer();
+      startPolling();
     }
 
     async function selectAnswer(choiceIdx) {
-      const q = quiz.questions[currentQ];
+      const q = QUIZ.questions[currentQ];
       const wasUnanswered = (answers[currentQ] === null);
+
       answers[currentQ] = choiceIdx;
 
-      // submit vote only once per question per user attempt
+      // Only count once per question per identity
       if (wasUnanswered) {
         try {
-          await apiVote(hostId, currentQ, choiceIdx, q.choices.length);
-        } catch (e) {
-          // ignore vote failures but continue UI
+          const result = await apiVote(currentQ, choiceIdx, q.choices.length);
+          if (result.alreadyVoted) {
+            $("feedback").textContent = "⚠️ This tab already voted on this question.";
+            $("feedback").className = "text-sm font-semibold text-amber-700";
+          } else {
+            $("feedback").textContent = (choiceIdx === q.correctIndex) ? "✅ Correct!" : "❌ Not quite.";
+            $("feedback").className = "text-sm font-semibold " + ((choiceIdx === q.correctIndex) ? "text-emerald-700" : "text-rose-700");
+          }
+        } catch {
+          $("feedback").textContent = "⚠️ Vote failed (API not available).";
+          $("feedback").className = "text-sm font-semibold text-amber-700";
         }
       }
 
-      const correct = (choiceIdx === q.correctIndex);
-      feedbackEl.textContent = correct ? "✅ Correct!" : "❌ Not quite. Remember: a business creates value for customers.";
-      feedbackEl.className = "text-sm font-semibold " + (correct ? "text-emerald-700" : "text-rose-700");
-
-      computeScore();
-      scoreEl.textContent = String(score);
-      nextBtn.disabled = false;
-
-      await renderQuestion();
+      await render();
     }
 
-    function showQuizUI() {
-      joinSection.classList.add("hidden");
-      errorSection.classList.add("hidden");
-      quizSection.classList.remove("hidden");
-
-      hostBadge.textContent = `Host: ${hostId}`;
-      setHostInUrl(hostId);
-
-      const total = quiz.questions.length;
-      answers = Array.from({length: total}, () => null);
-      currentQ = 0;
-      score = 0;
-
-      qTotalEl.textContent = String(total);
-      scoreTotalEl.textContent = String(total);
-      answeredTotalEl.textContent = String(total);
-
-      if (countsChart) {
-        countsChart.destroy();
-        countsChart = null;
-      }
-
-      renderQuestion();
-    }
-
-    function showErrorUI() {
-      quizSection.classList.add("hidden");
-      joinSection.classList.remove("hidden");
-      errorSection.classList.remove("hidden");
-      hostBadge.textContent = "Host: —";
-    }
-
-    function joinHost(h) {
-      const candidate = (h || "").trim();
-      if (!candidate) return;
-
-      if (!QUIZ_DATA[candidate]) {
-        showErrorUI();
-        return;
-      }
-
-      hostId = candidate;
-      quiz = QUIZ_DATA[hostId];
-      document.title = quiz.title;
-      showQuizUI();
-    }
-
-    joinBtn.addEventListener("click", () => joinHost(hostIdInput.value));
-    hostIdInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") joinHost(hostIdInput.value);
-    });
-
-    document.querySelectorAll(".quickHost").forEach(btn => {
-      btn.addEventListener("click", () => {
-        hostIdInput.value = btn.dataset.host;
-        joinHost(btn.dataset.host);
-      });
-    });
-
-    prevBtn.addEventListener("click", () => {
+    $("prevBtn").addEventListener("click", async () => {
       currentQ = Math.max(0, currentQ - 1);
-      renderQuestion();
+      await render();
     });
 
-    nextBtn.addEventListener("click", () => {
-      const total = quiz.questions.length;
-      if (currentQ === total - 1) {
-        renderQuestion();
-        endSection.classList.remove("hidden");
+    $("nextBtn").addEventListener("click", async () => {
+      if (answers[currentQ] === null) return;
+
+      if (currentQ === QUIZ.questions.length - 1) {
+        // finish
+        await render();
         return;
       }
-      currentQ = Math.min(total - 1, currentQ + 1);
-      renderQuestion();
+      currentQ++;
+      await render();
     });
 
-    restartBtn.addEventListener("click", () => {
-      const total = quiz.questions.length;
-      answers = Array.from({length: total}, () => null);
-      currentQ = 0;
-      score = 0;
-      renderQuestion();
+    // boot
+    render().catch(() => {
+      $("feedback").textContent = "⚠️ Could not load shared counts. Make sure /api/stats works + KV is configured.";
+      $("feedback").className = "text-sm font-semibold text-amber-700";
     });
-
-    backToJoinBtn.addEventListener("click", () => {
-      hostIdInput.value = hostId || "";
-      quizSection.classList.add("hidden");
-      errorSection.classList.add("hidden");
-      joinSection.classList.remove("hidden");
-      endSection.classList.add("hidden");
-      hostBadge.textContent = "Host: —";
-
-      const url = new URL(window.location.href);
-      url.searchParams.delete("host");
-      history.replaceState({}, "", url.toString());
-    });
-
-    resetCountsBtn.addEventListener("click", async () => {
-      if (!hostId || !quiz) return;
-
-      // If you didn't add /api/reset.js, remove this entire handler.
-      const questionCount = quiz.questions.length;
-      const choiceCounts = quiz.questions.map(q => q.choices.length);
-
-      try {
-        await apiResetHost(hostId, questionCount, choiceCounts);
-        await updateCountsChart();
-      } catch (e) {
-        feedbackEl.textContent = "⚠️ Reset unavailable. Add /api/reset.js (optional).";
-        feedbackEl.className = "text-sm font-semibold text-amber-700";
-      }
-    });
-
-    copyLinkBtn.addEventListener("click", async () => {
-      const url = new URL(window.location.href);
-      if (hostId) url.searchParams.set("host", hostId);
-      const text = url.toString();
-      try {
-        await navigator.clipboard.writeText(text);
-        copyLinkBtn.textContent = "Copied!";
-        setTimeout(() => copyLinkBtn.textContent = "Copy Link", 1200);
-      } catch {
-        alert("Could not copy. Your browser may block clipboard access.");
-      }
-    });
-
-    (function init() {
-      const fromUrl = getHostFromUrl();
-      if (fromUrl) {
-        hostIdInput.value = fromUrl;
-        joinHost(fromUrl);
-      }
-    })();
   </script>
 </body>
 </html>
