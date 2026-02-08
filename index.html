@@ -2,21 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#f5f0eb" id="metaTheme">
   <title>Teen Summit — Business Basics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800;1,9..40,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- ═══════════════════════════════════════════════════
+       FIREBASE — Replace with YOUR config from console.firebase.google.com
+       1. Create a project  →  Build → Realtime Database → Create
+       2. Set rules to:  { "rules": { ".read": true, ".write": true } }
+       3. Copy your config below
+       ═══════════════════════════════════════════════════ -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+    import { getDatabase, ref, set, get, onValue, runTransaction }
+      from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+
+    // ┌─────────────────────────────────────────────────┐
+    // │  PASTE YOUR FIREBASE CONFIG HERE                │
+    // └─────────────────────────────────────────────────┘
+    const firebaseConfig = {
+      apiKey:            "YOUR_API_KEY",
+      authDomain:        "YOUR_PROJECT.firebaseapp.com",
+      databaseURL:       "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+      projectId:         "YOUR_PROJECT",
+      storageBucket:     "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "000000000000",
+      appId:             "1:000000000000:web:abcdef1234567890"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    // Expose to global scope for the quiz logic
+    window._fb = { db, ref, set, get, onValue, runTransaction };
+    window.dispatchEvent(new Event("fb-ready"));
+  </script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ═══════ LIGHT THEME (default) ═══════ */
+    /* ═══════ LIGHT THEME ═══════ */
     :root {
       --bg-primary: #f5f0eb;
       --bg-secondary: #ffffff;
       --bg-tertiary: #ede7e0;
-      --bg-card-hover: #faf7f4;
       --text-primary: #1a1612;
       --text-secondary: #6b5e52;
       --text-muted: #9a8d82;
@@ -25,9 +60,7 @@
       --accent-soft: #fdeee8;
       --accent-hover: #d14e1f;
       --correct: #1a9956;
-      --correct-soft: #e6f5ed;
       --wrong: #d93636;
-      --wrong-soft: #fce8e8;
       --warn: #c48a12;
       --chart-a: #e85d2a;
       --chart-b: #3b7ddd;
@@ -39,23 +72,23 @@
       --progress-track: #ddd5cc;
       --progress-fill: #e85d2a;
       --shadow-sm: 0 1px 3px rgba(26,22,18,0.06);
-      --shadow-md: 0 4px 16px rgba(26,22,18,0.08);
+      --shadow-md: 0 4px 14px rgba(26,22,18,0.09);
       --radius: 16px;
-      --radius-sm: 10px;
+      --radius-sm: 12px;
       --radius-xs: 6px;
       --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     /* ═══════ DARK THEME ═══════ */
     [data-theme="dark"] {
-      --bg-primary: #111111;
-      --bg-secondary: #1a1a1a;
-      --bg-tertiary: #222222;
-      --bg-card-hover: #252525;
+      --bg-primary: #0e0e0e;
+      --bg-secondary: #191919;
+      --bg-tertiary: #232323;
       --text-primary: #f0ece8;
       --text-secondary: #a09890;
-      --text-muted: #706860;
-      --border: #2e2e2e;
+      --text-muted: #605850;
+      --border: #2c2c2c;
       --accent: #f07040;
       --accent-soft: #2c1d15;
       --accent-hover: #ff8a60;
@@ -67,23 +100,25 @@
       --chart-c: #2dd47a;
       --chart-d: #c084fc;
       --selected-bg: #f07040;
-      --selected-text: #111111;
-      --selected-badge: #111111;
-      --progress-track: #2e2e2e;
+      --selected-text: #0e0e0e;
+      --selected-badge: #0e0e0e;
+      --progress-track: #2c2c2c;
       --progress-fill: #f07040;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+      --shadow-md: 0 4px 14px rgba(0,0,0,0.5);
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
 
     body {
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
       background: var(--bg-primary);
       color: var(--text-primary);
       min-height: 100vh;
+      min-height: 100dvh;
       transition: background var(--transition), color var(--transition);
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     /* ─── Header ─── */
@@ -91,102 +126,117 @@
       position: sticky; top: 0; z-index: 20;
       background: var(--bg-secondary);
       border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
       transition: background var(--transition), border-color var(--transition);
     }
     .header-inner {
       max-width: 1080px;
       margin: 0 auto;
-      padding: 14px 20px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
     .logo {
-      width: 44px; height: 44px;
-      border-radius: 14px;
+      width: 40px; height: 40px;
+      border-radius: 12px;
       background: var(--accent);
       color: #fff;
       display: grid;
       place-items: center;
       font-family: 'Bricolage Grotesque', sans-serif;
       font-weight: 800;
-      font-size: 16px;
-      letter-spacing: -0.5px;
+      font-size: 15px;
       flex-shrink: 0;
     }
     .header-text { flex: 1; min-width: 0; }
     .header-title {
       font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1.15rem;
+      font-size: 1rem;
       font-weight: 800;
       line-height: 1.2;
       letter-spacing: -0.3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .header-sub {
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       color: var(--text-secondary);
-      margin-top: 2px;
+      margin-top: 1px;
     }
+    .header-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
     .host-badge {
-      padding: 6px 14px;
+      padding: 5px 12px;
       border-radius: 100px;
       background: var(--bg-tertiary);
       color: var(--text-secondary);
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       font-weight: 600;
       white-space: nowrap;
-      transition: background var(--transition), color var(--transition);
+      transition: background var(--transition);
     }
-    .theme-toggle {
-      width: 40px; height: 40px;
-      border-radius: 12px;
+    .icon-btn {
+      width: 38px; height: 38px;
+      border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--bg-tertiary);
       color: var(--text-primary);
       cursor: pointer;
       display: grid;
       place-items: center;
-      font-size: 18px;
+      font-size: 16px;
       transition: all var(--transition);
       flex-shrink: 0;
+      -webkit-appearance: none;
     }
-    .theme-toggle:hover {
+    .icon-btn:hover {
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
-      transform: rotate(15deg);
     }
+    .icon-btn:active { transform: scale(0.92); }
 
-    /* ─── Main Grid ─── */
+    /* ─── Main ─── */
     main {
       max-width: 1080px;
       margin: 0 auto;
-      padding: 24px 20px 40px;
+      padding: 16px 16px calc(16px + var(--safe-bottom));
     }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
+    .layout {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
-    @media (min-width: 960px) {
-      .grid { grid-template-columns: 3fr 2fr; }
+    @media (min-width: 860px) {
+      main { padding: 24px 20px 40px; }
+      .layout {
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 20px;
+        align-items: start;
+      }
+    }
+    @media (min-width: 1060px) {
+      .layout { grid-template-columns: 1fr 400px; }
     }
 
-    /* ─── Cards ─── */
+    /* ─── Card ─── */
     .card {
       border-radius: var(--radius);
       border: 1px solid var(--border);
       background: var(--bg-secondary);
-      padding: 24px;
+      padding: 20px;
       box-shadow: var(--shadow-sm);
-      transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+      transition: background var(--transition), border-color var(--transition);
+    }
+    @media (min-width: 860px) {
+      .card { padding: 24px; }
     }
 
-    /* ─── Question Panel ─── */
-    .q-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+    /* ─── Question Card ─── */
+    .q-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
     .q-label {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1.5px;
@@ -194,15 +244,17 @@
     }
     .q-text {
       font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1.35rem;
+      font-size: 1.15rem;
       font-weight: 800;
       line-height: 1.3;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.2px;
       margin-top: 6px;
     }
+    @media (min-width: 560px) { .q-text { font-size: 1.3rem; } }
+
     .score-box { text-align: right; flex-shrink: 0; }
     .score-label {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1.5px;
@@ -210,109 +262,125 @@
     }
     .score-value {
       font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 800;
       line-height: 1;
       letter-spacing: -1px;
     }
 
-    /* ─── Answer Grid ─── */
+    /* ─── Answers ─── */
     .answers-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 12px;
-      margin-top: 20px;
+      gap: 10px;
+      margin-top: 18px;
     }
     @media (min-width: 560px) {
-      .answers-grid { grid-template-columns: 1fr 1fr; }
+      .answers-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
     }
+
     .answer-btn {
       text-align: left;
       border-radius: var(--radius-sm);
       border: 2px solid var(--border);
       background: var(--bg-secondary);
-      padding: 16px;
+      padding: 14px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.18s ease;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 12px;
-      position: relative;
-      overflow: hidden;
       font-family: inherit;
       color: var(--text-primary);
-    }
-    .answer-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--accent);
-      opacity: 0;
-      transition: opacity 0.2s ease;
+      -webkit-appearance: none;
+      min-height: 56px;
+      touch-action: manipulation;
     }
     .answer-btn:hover {
       border-color: var(--accent);
       box-shadow: var(--shadow-md);
       transform: translateY(-1px);
     }
-    .answer-btn:hover::before { opacity: 0.04; }
-    .answer-btn:active { transform: translateY(0); }
-
+    .answer-btn:active { transform: scale(0.98); }
     .answer-btn.selected {
       background: var(--selected-bg);
       border-color: var(--selected-bg);
       color: var(--selected-text);
       box-shadow: var(--shadow-md);
     }
-    .answer-btn.selected::before { opacity: 0; }
     .answer-btn.selected .answer-badge {
       background: var(--selected-badge) !important;
       color: var(--selected-bg) !important;
     }
-    .answer-btn.selected .answer-hint { opacity: 0.5; }
+    .answer-btn.selected .answer-hint { opacity: 0.45; }
 
     .answer-badge {
-      width: 32px; height: 32px;
+      width: 34px; height: 34px;
       border-radius: 10px;
       display: grid;
       place-items: center;
       font-weight: 800;
       font-size: 0.85rem;
       flex-shrink: 0;
-      transition: all 0.2s ease;
     }
-    .badge-a { background: rgba(232,93,42,0.12); color: var(--chart-a); }
-    .badge-b { background: rgba(59,125,221,0.12); color: var(--chart-b); }
-    .badge-c { background: rgba(26,153,86,0.12); color: var(--chart-c); }
-    .badge-d { background: rgba(155,89,182,0.12); color: var(--chart-d); }
+    .badge-a { background: rgba(232,93,42,0.13); color: var(--chart-a); }
+    .badge-b { background: rgba(59,125,221,0.13); color: var(--chart-b); }
+    .badge-c { background: rgba(26,153,86,0.13); color: var(--chart-c); }
+    .badge-d { background: rgba(155,89,182,0.13); color: var(--chart-d); }
 
-    .answer-text { font-weight: 600; line-height: 1.4; font-size: 0.92rem; position: relative; }
-    .answer-hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; transition: all 0.2s; position: relative; }
+    .answer-content { flex: 1; min-width: 0; }
+    .answer-text { font-weight: 600; line-height: 1.35; font-size: 0.88rem; }
+    .answer-hint { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
 
-    /* ─── Footer Row ─── */
-    .q-footer {
-      margin-top: 20px;
+    /* ─── Step Dots ─── */
+    .step-dots {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 4px 0;
+    }
+    .step-dot {
+      width: 10px; height: 10px;
+      border-radius: 100px;
+      background: var(--progress-track);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+      -webkit-appearance: none;
+      touch-action: manipulation;
+      padding: 0;
+    }
+    .step-dot.active { width: 28px; background: var(--accent); }
+    .step-dot.answered { background: var(--correct); }
+    .step-dot.answered.active { background: var(--accent); width: 28px; }
+
+    /* ─── Footer ─── */
+    .q-footer {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
       gap: 12px;
     }
+    @media (min-width: 480px) {
+      .q-footer { flex-direction: row; align-items: center; justify-content: space-between; }
+    }
     .feedback {
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 700;
-      min-height: 24px;
+      min-height: 22px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .feedback.correct { color: var(--correct); }
-    .feedback.wrong { color: var(--wrong); }
-    .feedback.warn { color: var(--warn); }
+    .feedback.wrong   { color: var(--wrong); }
+    .feedback.warn    { color: var(--warn); }
 
     .nav-btns { display: flex; gap: 8px; }
     .nav-btn {
-      padding: 10px 20px;
+      flex: 1;
+      padding: 12px 16px;
       border-radius: var(--radius-sm);
       border: 2px solid var(--border);
       background: var(--bg-secondary);
@@ -320,29 +388,29 @@
       font-weight: 700;
       font-size: 0.88rem;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.18s ease;
       font-family: inherit;
+      text-align: center;
+      touch-action: manipulation;
+      -webkit-appearance: none;
     }
-    .nav-btn:hover:not(:disabled) {
-      border-color: var(--text-primary);
-      box-shadow: var(--shadow-sm);
-    }
-    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    @media (min-width: 480px) { .nav-btn { flex: none; padding: 10px 20px; } }
+    .nav-btn:active:not(:disabled) { transform: scale(0.96); }
+    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
     .nav-btn.primary {
       background: var(--accent);
       border-color: var(--accent);
       color: #fff;
     }
-    .nav-btn.primary:hover:not(:disabled) {
-      background: var(--accent-hover);
-      border-color: var(--accent-hover);
-    }
+    .nav-btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
 
     /* ─── Sidebar ─── */
-    .sidebar-stack { display: flex; flex-direction: column; gap: 20px; }
-    .chart-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .sidebar-stack { display: flex; flex-direction: column; gap: 16px; }
+
+    /* ─── Live Chart ─── */
+    .chart-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
     .chart-label {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1.5px;
@@ -350,43 +418,82 @@
     }
     .chart-title {
       font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 800;
-      margin-top: 2px;
+      margin-top: 1px;
     }
-    .auto-toggle {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 0.75rem; font-weight: 600; color: var(--text-secondary);
-      cursor: pointer; user-select: none;
+    .live-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--correct);
+      margin-right: 4px;
+      animation: pulse-dot 2s ease infinite;
     }
-    .auto-toggle input[type="checkbox"] {
-      width: 16px; height: 16px;
-      accent-color: var(--accent);
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
     }
-    .chart-wrap {
-      margin-top: 16px;
-      position: relative;
+    .live-tag {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--correct);
+      padding: 3px 10px 3px 8px;
+      background: rgba(26,153,86,0.1);
+      border-radius: 100px;
     }
-    .chart-wrap canvas { border-radius: var(--radius-xs); }
+    [data-theme="dark"] .live-tag { background: rgba(45,212,122,0.12); }
+    .chart-wrap { margin-top: 14px; }
 
-    /* ─── Progress Card ─── */
+    /* Vote count chips under chart */
+    .vote-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .vote-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: var(--bg-tertiary);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      transition: background var(--transition);
+    }
+    .vote-chip-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+    }
+    .total-votes {
+      margin-top: 10px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ─── Progress ─── */
     .progress-card {
       border-radius: var(--radius-sm);
       background: var(--bg-tertiary);
       border: 1px solid var(--border);
-      padding: 18px;
+      padding: 16px;
       transition: background var(--transition), border-color var(--transition);
     }
     .progress-label {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1.5px;
       color: var(--text-muted);
     }
     .progress-track {
-      margin-top: 10px;
-      height: 8px;
+      margin-top: 8px;
+      height: 6px;
       border-radius: 100px;
       background: var(--progress-track);
       overflow: hidden;
@@ -399,50 +506,39 @@
       transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .progress-info {
-      margin-top: 10px;
-      font-size: 0.85rem;
+      margin-top: 8px;
+      font-size: 0.82rem;
       color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
     }
     .progress-info strong { color: var(--text-primary); font-weight: 700; }
     .progress-meta {
-      margin-top: 8px;
-      font-size: 0.72rem;
+      margin-top: 6px;
+      font-size: 0.68rem;
       color: var(--text-muted);
     }
 
-    /* ─── Finish Card ─── */
+    /* ─── Finish ─── */
     .finish-card {
       border: 2px solid var(--accent) !important;
       background: var(--accent-soft) !important;
       animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .finish-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-    }
-    .finish-title {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 800;
-    }
-    .finish-sub { color: var(--text-secondary); font-size: 0.9rem; margin-top: 2px; }
+    .finish-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .finish-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.2rem; font-weight: 800; }
+    .finish-sub { color: var(--text-secondary); font-size: 0.82rem; margin-top: 2px; }
     .finish-score {
       font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 2.4rem;
+      font-size: 2rem;
       font-weight: 800;
       color: var(--accent);
       letter-spacing: -1px;
       line-height: 1;
     }
     .finish-score-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--text-muted);
-      text-align: right;
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--text-muted); text-align: right;
     }
 
     @keyframes pop-in {
@@ -450,61 +546,49 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    /* ─── Step Dots ─── */
-    .step-dots {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 16px;
+    /* ─── Setup banner ─── */
+    .setup-banner {
+      margin-bottom: 16px;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      background: var(--warn);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 600;
+      line-height: 1.5;
     }
-    .step-dot {
-      width: 10px; height: 10px;
-      border-radius: 100px;
-      background: var(--progress-track);
-      transition: all 0.3s ease;
-      cursor: pointer;
-      border: none;
-    }
-    .step-dot.active {
-      width: 28px;
-      background: var(--accent);
-    }
-    .step-dot.answered { background: var(--correct); }
-    .step-dot.answered.active {
-      background: var(--accent);
-      width: 28px;
+    .setup-banner a { color: #fff; text-decoration: underline; }
+    .setup-banner code {
+      background: rgba(0,0,0,0.15);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.78rem;
     }
 
     /* ─── Confetti ─── */
     .confetti-container {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      pointer-events: none;
-      z-index: 100;
-      overflow: hidden;
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 100; overflow: hidden;
     }
     .confetti-piece {
       position: absolute;
-      width: 10px; height: 10px;
       top: -20px;
       animation: confetti-fall 3s ease-in forwards;
     }
     @keyframes confetti-fall {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
 
     /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-    @media (max-width: 600px) {
-      .header-inner { padding: 12px 16px; }
+    /* Hide on very small widths */
+    @media (max-width: 400px) {
       .host-badge { display: none; }
-      main { padding: 16px 16px 32px; }
-      .q-text { font-size: 1.15rem; }
-      .card { padding: 18px; }
+      .header-title { font-size: 0.9rem; }
     }
   </style>
 </head>
@@ -517,17 +601,25 @@
         <div class="header-title">Teen Summit — Business Basics</div>
         <div class="header-sub">5 questions · Live shared results</div>
       </div>
-      <span id="hostBadge" class="host-badge">Host: —</span>
-      <button id="themeBtn" class="theme-toggle" title="Toggle light/dark mode" aria-label="Toggle theme">☀️</button>
+      <div class="header-actions">
+        <span id="hostBadge" class="host-badge">Host: —</span>
+        <button id="themeBtn" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">☀️</button>
+      </div>
     </div>
   </header>
 
   <main>
-    <div class="grid">
+    <div id="setupBanner" class="setup-banner" style="display:none;">
+      ⚠️ Firebase not configured. Replace <code>firebaseConfig</code> in this file with your
+      <a href="https://console.firebase.google.com" target="_blank">Firebase project</a> credentials.
+      The quiz still works locally — votes just won't sync between devices.
+    </div>
+
+    <div class="layout">
       <!-- Question Panel -->
       <div class="card" id="questionCard">
         <div class="q-header">
-          <div>
+          <div style="flex:1; min-width:0;">
             <div class="q-label">Question <span id="qIndex">1</span> of <span id="qTotal">5</span></div>
             <h2 id="qText" class="q-text">—</h2>
           </div>
@@ -538,7 +630,6 @@
         </div>
 
         <div id="answersGrid" class="answers-grid"></div>
-
         <div class="step-dots" id="stepDots"></div>
 
         <div class="q-footer">
@@ -558,14 +649,13 @@
               <div class="chart-label">Live Results</div>
               <div class="chart-title">Answer Distribution</div>
             </div>
-            <label class="auto-toggle">
-              <input id="pollToggle" type="checkbox" checked />
-              Auto-update
-            </label>
+            <span class="live-tag" id="liveTag"><span class="live-dot"></span>Live</span>
           </div>
           <div class="chart-wrap">
-            <canvas id="countsChart" height="200"></canvas>
+            <canvas id="countsChart" height="190"></canvas>
           </div>
+          <div class="vote-chips" id="voteChips"></div>
+          <div class="total-votes" id="totalVotesLabel"></div>
         </div>
 
         <div class="progress-card">
@@ -574,7 +664,8 @@
             <div id="progressBar" class="progress-fill"></div>
           </div>
           <div class="progress-info">
-            Answered: <strong><span id="answeredCount">0</span></strong> / <strong><span id="answeredTotal">5</span></strong>
+            <span>Answered: <strong><span id="answeredCount">0</span></strong> / <strong><span id="answeredTotal">5</span></strong></span>
+            <span><strong id="pctLabel">0%</strong></span>
           </div>
           <div class="progress-meta">
             ID: <span id="clientBadge"></span> · Tab: <span id="tabBadge"></span>
@@ -599,101 +690,51 @@
 
   <script>
     /* ═══════════════════════════════════════════
-       THEME TOGGLE
+       THEME
        ═══════════════════════════════════════════ */
     const themeBtn = document.getElementById('themeBtn');
-    const savedTheme = localStorage.getItem('ts_theme');
-    if (savedTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      themeBtn.textContent = '🌙';
-    }
-    themeBtn.addEventListener('click', () => {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (isDark) {
-        document.documentElement.removeAttribute('data-theme');
-        themeBtn.textContent = '☀️';
-        localStorage.setItem('ts_theme', 'light');
-      } else {
+    const metaTheme = document.getElementById('metaTheme');
+    function applyTheme(dark) {
+      if (dark) {
         document.documentElement.setAttribute('data-theme', 'dark');
         themeBtn.textContent = '🌙';
-        localStorage.setItem('ts_theme', 'dark');
+        metaTheme.content = '#0e0e0e';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeBtn.textContent = '☀️';
+        metaTheme.content = '#f5f0eb';
       }
+      localStorage.setItem('ts_theme', dark ? 'dark' : 'light');
       if (chart) updateChartTheme();
+    }
+    if (localStorage.getItem('ts_theme') === 'dark') applyTheme(true);
+    themeBtn.addEventListener('click', () => {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark');
     });
 
     /* ═══════════════════════════════════════════
        QUIZ DATA
        ═══════════════════════════════════════════ */
     const QUIZ = {
-      title: "Teen Summit \u2014 Business Basics",
       questions: [
-        {
-          text: "What is a business?",
-          choices: [
-            "A way to trade goods or services for money (or value)",
-            "A school subject you only study in college",
-            "A hobby you do for free",
-            "A job where you only do chores"
-          ],
-          correctIndex: 0
-        },
-        {
-          text: "Which is the BEST example of a business for a middle schooler?",
-          choices: [
-            "Mowing lawns for neighbors and charging a price",
-            "Doing homework for free every day",
-            "Watching videos after school",
-            "Borrowing money and never paying it back"
-          ],
-          correctIndex: 0
-        },
-        {
-          text: "What does \u201Cprofit\u201D mean?",
-          choices: [
-            "Money left after costs are paid",
-            "All the money you earn before paying costs",
-            "A business license",
-            "A fancy logo"
-          ],
-          correctIndex: 0
-        },
-        {
-          text: "Which is a smart FIRST step to start a business?",
-          choices: [
-            "Find a problem to solve or a need people have",
-            "Buy expensive supplies right away",
-            "Skip asking customers what they want",
-            "Set random prices each day"
-          ],
-          correctIndex: 0
-        },
-        {
-          text: "A business is different from a job because\u2026",
-          choices: [
-            "A business owner finds customers and sets prices",
-            "A job never pays money",
-            "A business is only online",
-            "A job means you can\u2019t learn skills"
-          ],
-          correctIndex: 0
-        }
+        { text: "What is a business?", choices: ["A way to trade goods or services for money (or value)","A school subject you only study in college","A hobby you do for free","A job where you only do chores"], correctIndex: 0 },
+        { text: "Which is the BEST example of a business for a middle schooler?", choices: ["Mowing lawns for neighbors and charging a price","Doing homework for free every day","Watching videos after school","Borrowing money and never paying it back"], correctIndex: 0 },
+        { text: "What does \u201Cprofit\u201D mean?", choices: ["Money left after costs are paid","All the money you earn before paying costs","A business license","A fancy logo"], correctIndex: 0 },
+        { text: "Which is a smart FIRST step to start a business?", choices: ["Find a problem to solve or a need people have","Buy expensive supplies right away","Skip asking customers what they want","Set random prices each day"], correctIndex: 0 },
+        { text: "A business is different from a job because\u2026", choices: ["A business owner finds customers and sets prices","A job never pays money","A business is only online","A job means you can\u2019t learn skills"], correctIndex: 0 }
       ]
     };
 
     /* ═══════════════════════════════════════════
-       UTILS & STATE
+       STATE & IDs
        ═══════════════════════════════════════════ */
     const $ = (id) => document.getElementById(id);
-
     const pageUrl = new URL(window.location.href);
     const host = (pageUrl.searchParams.get("host") || "teensummit").trim();
 
     function ensureId(storage, key) {
       let v = storage.getItem(key);
-      if (!v) {
-        v = crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now();
-        storage.setItem(key, v);
-      }
+      if (!v) { v = crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now(); storage.setItem(key, v); }
       return v;
     }
     const clientId = ensureId(localStorage, "teen_summit_client_id");
@@ -707,32 +748,79 @@
     let answers   = Array.from({ length: QUIZ.questions.length }, () => null);
     let score     = 0;
     let chart     = null;
-    let pollTimer = null;
+    let fbReady   = false;
+    let unsubscribe = null;  // Firebase listener cleanup
 
-    const CHART_VAR_NAMES = ['--chart-a', '--chart-b', '--chart-c', '--chart-d'];
-    const BADGE_CLASSES   = ['badge-a', 'badge-b', 'badge-c', 'badge-d'];
+    const CHART_VARS   = ['--chart-a','--chart-b','--chart-c','--chart-d'];
+    const BADGE_CLASSES = ['badge-a','badge-b','badge-c','badge-d'];
+    const BADGE_LABELS  = ['A','B','C','D'];
 
-    function css(v) {
-      return getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-    }
+    function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
     /* ═══════════════════════════════════════════
-       API CALLS
+       FIREBASE BACKEND (or local fallback)
        ═══════════════════════════════════════════ */
-    async function apiGetCounts(q, choiceCount) {
-      const r = await fetch("/api/stats?host=" + encodeURIComponent(host) + "&q=" + q + "&choiceCount=" + choiceCount);
-      if (!r.ok) throw new Error("GET failed");
-      return r.json();
+    // Local fallback counts when Firebase isn't configured
+    let localCounts = QUIZ.questions.map(q => Array(q.choices.length).fill(0));
+    let localVoted  = new Set();
+
+    // Returns the DB path for a question's votes
+    function dbPath(q) {
+      return "quiz/" + host + "/q" + q;
     }
 
-    async function apiVote(q, choice, choiceCount) {
-      const r = await fetch("/api/stats", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ host, q, choice, choiceCount, clientId, tabId })
+    async function fbVote(qIdx, choice) {
+      if (!fbReady) {
+        // Local fallback
+        const key = qIdx + "-" + tabId;
+        if (localVoted.has(key)) return { counts: localCounts[qIdx], alreadyVoted: true };
+        localCounts[qIdx][choice]++;
+        localVoted.add(key);
+        return { counts: localCounts[qIdx], alreadyVoted: false };
+      }
+
+      const { db, ref, runTransaction, get } = window._fb;
+      const votedKey = "quiz/" + host + "/voted/" + tabId + "/q" + qIdx;
+
+      // Check if already voted
+      const snap = await get(ref(db, votedKey));
+      if (snap.exists()) {
+        const cSnap = await get(ref(db, dbPath(qIdx)));
+        return { counts: cSnap.val() || Array(QUIZ.questions[qIdx].choices.length).fill(0), alreadyVoted: true };
+      }
+
+      // Transaction: increment the chosen answer
+      const countRef = ref(db, dbPath(qIdx));
+      await runTransaction(countRef, (current) => {
+        if (!current) current = Array(QUIZ.questions[qIdx].choices.length).fill(0);
+        current[choice] = (current[choice] || 0) + 1;
+        return current;
       });
-      if (!r.ok) throw new Error("POST failed");
-      return r.json();
+
+      // Mark as voted
+      await window._fb.set(ref(db, votedKey), true);
+
+      const updatedSnap = await get(countRef);
+      return { counts: updatedSnap.val(), alreadyVoted: false };
+    }
+
+    async function fbGetCounts(qIdx) {
+      if (!fbReady) return localCounts[qIdx];
+      const { db, ref, get } = window._fb;
+      const snap = await get(ref(db, dbPath(qIdx)));
+      return snap.val() || Array(QUIZ.questions[qIdx].choices.length).fill(0);
+    }
+
+    // Real-time listener for a specific question
+    function fbListen(qIdx, callback) {
+      if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+      if (!fbReady) return;
+      const { db, ref, onValue } = window._fb;
+      const unsub = onValue(ref(db, dbPath(qIdx)), (snap) => {
+        const counts = snap.val() || Array(QUIZ.questions[qIdx].choices.length).fill(0);
+        callback(counts);
+      });
+      unsubscribe = () => unsub(); // onValue returns an unsubscribe function
     }
 
     /* ═══════════════════════════════════════════
@@ -740,26 +828,23 @@
        ═══════════════════════════════════════════ */
     function computeScore() {
       score = 0;
-      QUIZ.questions.forEach((q, i) => {
-        if (answers[i] === q.correctIndex) score++;
-      });
+      QUIZ.questions.forEach((q, i) => { if (answers[i] === q.correctIndex) score++; });
     }
-
-    function answeredCount() {
-      return answers.filter(v => v !== null).length;
-    }
+    function answeredCount() { return answers.filter(v => v !== null).length; }
 
     function updateProgress() {
       const done  = answeredCount();
       const total = QUIZ.questions.length;
-      $("answeredCount").textContent = String(done);
-      $("answeredTotal").textContent = String(total);
-      $("progressBar").style.width   = Math.round((done / total) * 100) + "%";
+      $("answeredCount").textContent = done;
+      $("answeredTotal").textContent = total;
+      const pct = Math.round((done / total) * 100);
+      $("progressBar").style.width = pct + "%";
+      $("pctLabel").textContent = pct + "%";
 
       if (done === total) {
         $("endSection").style.display = '';
-        $("finalScore").textContent   = String(score);
-        $("finalTotal").textContent   = String(total);
+        $("finalScore").textContent = score;
+        $("finalTotal").textContent = total;
         fireConfetti();
       } else {
         $("endSection").style.display = 'none';
@@ -775,8 +860,9 @@
       QUIZ.questions.forEach((_, i) => {
         const dot = document.createElement("button");
         dot.className = "step-dot";
-        if (i === currentQ)      dot.classList.add("active");
+        if (i === currentQ) dot.classList.add("active");
         if (answers[i] !== null) dot.classList.add("answered");
+        dot.setAttribute("aria-label", "Question " + (i + 1));
         dot.addEventListener("click", async () => { currentQ = i; await render(); });
         el.appendChild(dot);
       });
@@ -785,77 +871,39 @@
     /* ═══════════════════════════════════════════
        CHART
        ═══════════════════════════════════════════ */
-    function chartColors() { return CHART_VAR_NAMES.map(css); }
+    function chartColors() { return CHART_VARS.map(css); }
 
     function updateChartTheme() {
       if (!chart) return;
-      const colors = chartColors();
-      chart.data.datasets[0].backgroundColor      = colors;
-      chart.data.datasets[0].borderColor           = colors;
-      chart.data.datasets[0].hoverBackgroundColor   = colors;
+      const c = chartColors();
+      chart.data.datasets[0].backgroundColor = c;
+      chart.data.datasets[0].borderColor = c;
       chart.options.scales.x.ticks.color = css('--text-secondary');
       chart.options.scales.y.ticks.color = css('--text-secondary');
       chart.options.scales.y.grid.color  = css('--border');
       chart.update('none');
     }
 
-    async function updateChartFromServer() {
-      const q       = QUIZ.questions[currentQ];
-      const payload = await apiGetCounts(currentQ, q.choices.length);
-      const counts  = payload.counts;
-      const labels  = q.choices.map((_, i) => String.fromCharCode(65 + i));
-      const colors  = chartColors();
+    function updateChart(counts) {
+      const q = QUIZ.questions[currentQ];
+      const labels = q.choices.map((_, i) => BADGE_LABELS[i]);
+      const colors = chartColors();
 
       if (!chart) {
         chart = new Chart($("countsChart").getContext("2d"), {
           type: "bar",
           data: {
             labels,
-            datasets: [{
-              label: "Answers",
-              data: counts,
-              backgroundColor: colors,
-              borderColor: colors,
-              hoverBackgroundColor: colors,
-              borderWidth: 0,
-              borderRadius: 8,
-              borderSkipped: false,
-              barPercentage: 0.65,
-              categoryPercentage: 0.7
-            }]
+            datasets: [{ data: counts, backgroundColor: colors, borderColor: colors, borderWidth: 0, borderRadius: 8, borderSkipped: false, barPercentage: 0.6, categoryPercentage: 0.7 }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: true,
-            animation: { duration: 500, easing: 'easeOutQuart' },
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                backgroundColor: css('--bg-secondary'),
-                titleColor: css('--text-primary'),
-                bodyColor: css('--text-primary'),
-                borderColor: css('--border'),
-                borderWidth: 1,
-                cornerRadius: 8,
-                padding: 10,
-                displayColors: true,
-                callbacks: {
-                  label: function(ctx) { return " " + ctx.parsed.y + " vote" + (ctx.parsed.y !== 1 ? "s" : ""); }
-                }
-              }
-            },
+            animation: { duration: 400, easing: 'easeOutQuart' },
+            plugins: { legend: { display: false }, tooltip: { backgroundColor: css('--bg-secondary'), titleColor: css('--text-primary'), bodyColor: css('--text-primary'), borderColor: css('--border'), borderWidth: 1, cornerRadius: 8, padding: 10, displayColors: true, callbacks: { label: (ctx) => " " + ctx.parsed.y + " vote" + (ctx.parsed.y !== 1 ? "s" : "") } } },
             scales: {
-              y: {
-                beginAtZero: true,
-                ticks: { precision: 0, color: css('--text-secondary'), font: { size: 11, weight: '600' } },
-                grid: { color: css('--border'), drawBorder: false },
-                border: { display: false }
-              },
-              x: {
-                ticks: { color: css('--text-secondary'), font: { size: 13, weight: '700' } },
-                grid: { display: false },
-                border: { display: false }
-              }
+              y: { beginAtZero: true, ticks: { precision: 0, color: css('--text-secondary'), font: { size: 11, weight: '600' } }, grid: { color: css('--border'), drawBorder: false }, border: { display: false } },
+              x: { ticks: { color: css('--text-secondary'), font: { size: 13, weight: '700' } }, grid: { display: false }, border: { display: false } }
             }
           }
         });
@@ -866,20 +914,19 @@
         chart.data.datasets[0].borderColor = colors;
         chart.update();
       }
-    }
 
-    function startPolling() {
-      stopPolling();
-      if (!$("pollToggle").checked) return;
-      pollTimer = setInterval(() => { updateChartFromServer().catch(() => {}); }, 1200);
+      // Vote chips
+      const chips = $("voteChips");
+      const total = counts.reduce((a, b) => a + b, 0);
+      chips.innerHTML = "";
+      counts.forEach((c, i) => {
+        const chip = document.createElement("span");
+        chip.className = "vote-chip";
+        chip.innerHTML = '<span class="vote-chip-dot" style="background:' + colors[i] + '"></span>' + BADGE_LABELS[i] + ': ' + c;
+        chips.appendChild(chip);
+      });
+      $("totalVotesLabel").textContent = total + " total vote" + (total !== 1 ? "s" : "") + " on this question";
     }
-    function stopPolling() {
-      if (pollTimer) clearInterval(pollTimer);
-      pollTimer = null;
-    }
-    $("pollToggle").addEventListener("change", () => {
-      $("pollToggle").checked ? startPolling() : stopPolling();
-    });
 
     /* ═══════════════════════════════════════════
        CONFETTI
@@ -891,17 +938,17 @@
       const container = document.createElement('div');
       container.className = 'confetti-container';
       document.body.appendChild(container);
-      const palette = ['#e85d2a','#3b7ddd','#1a9956','#9b59b6','#f1c40f','#e74c3c'];
-      for (let i = 0; i < 60; i++) {
+      const pal = ['#e85d2a','#3b7ddd','#1a9956','#9b59b6','#f1c40f','#e74c3c'];
+      for (let i = 0; i < 55; i++) {
         const p = document.createElement('div');
         p.className = 'confetti-piece';
-        p.style.left            = Math.random() * 100 + '%';
-        p.style.background      = palette[Math.floor(Math.random() * palette.length)];
-        p.style.animationDelay  = Math.random() * 1.5 + 's';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.background = pal[Math.floor(Math.random() * pal.length)];
+        p.style.animationDelay = Math.random() * 1.5 + 's';
         p.style.animationDuration = (2 + Math.random() * 2) + 's';
-        p.style.borderRadius    = Math.random() > 0.5 ? '50%' : '2px';
-        p.style.width           = (6 + Math.random() * 8) + 'px';
-        p.style.height          = (6 + Math.random() * 8) + 'px';
+        p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        const s = 6 + Math.random() * 8;
+        p.style.width = s + 'px'; p.style.height = s + 'px';
         container.appendChild(p);
       }
       setTimeout(() => container.remove(), 5000);
@@ -912,17 +959,17 @@
        ═══════════════════════════════════════════ */
     async function render() {
       const q = QUIZ.questions[currentQ];
-      $("qIndex").textContent    = String(currentQ + 1);
-      $("qTotal").textContent    = String(QUIZ.questions.length);
-      $("qText").textContent     = q.text;
+      $("qIndex").textContent = currentQ + 1;
+      $("qTotal").textContent = QUIZ.questions.length;
+      $("qText").textContent  = q.text;
 
       computeScore();
-      $("score").textContent     = String(score);
-      $("scoreTotal").textContent = String(QUIZ.questions.length);
+      $("score").textContent      = score;
+      $("scoreTotal").textContent = QUIZ.questions.length;
 
-      $("prevBtn").disabled  = currentQ === 0;
+      $("prevBtn").disabled   = currentQ === 0;
       $("nextBtn").textContent = currentQ === QUIZ.questions.length - 1 ? "Finish ✓" : "Next →";
-      $("nextBtn").disabled  = answers[currentQ] === null;
+      $("nextBtn").disabled   = answers[currentQ] === null;
 
       $("feedback").textContent = "";
       $("feedback").className   = "feedback";
@@ -930,27 +977,30 @@
       // Answer buttons
       const grid = $("answersGrid");
       grid.innerHTML = "";
-
       q.choices.forEach((text, idx) => {
-        const selected = answers[currentQ] === idx;
+        const sel = answers[currentQ] === idx;
         const btn = document.createElement("button");
-        btn.className = "answer-btn" + (selected ? " selected" : "");
+        btn.className = "answer-btn" + (sel ? " selected" : "");
         btn.innerHTML =
-          '<div class="answer-badge ' + (selected ? '' : (BADGE_CLASSES[idx] || '')) + '">' +
-            String.fromCharCode(65 + idx) +
-          '</div>' +
-          '<div>' +
-            '<div class="answer-text">' + text + '</div>' +
-            '<div class="answer-hint">' + (selected ? 'Selected' : 'Tap to select') + '</div>' +
-          '</div>';
+          '<div class="answer-badge ' + (sel ? '' : BADGE_CLASSES[idx]) + '">' + BADGE_LABELS[idx] + '</div>' +
+          '<div class="answer-content"><div class="answer-text">' + text + '</div>' +
+          '<div class="answer-hint">' + (sel ? 'Selected' : 'Tap to select') + '</div></div>';
         btn.addEventListener("click", () => selectAnswer(idx));
         grid.appendChild(btn);
       });
 
       renderStepDots();
       updateProgress();
-      await updateChartFromServer();
-      startPolling();
+
+      // Load counts & set up real-time listener
+      try {
+        const counts = await fbGetCounts(currentQ);
+        updateChart(counts);
+        // Attach real-time listener
+        fbListen(currentQ, (liveCounts) => { updateChart(liveCounts); });
+      } catch {
+        updateChart(Array(q.choices.length).fill(0));
+      }
     }
 
     async function selectAnswer(choiceIdx) {
@@ -960,39 +1010,54 @@
 
       if (wasUnanswered) {
         try {
-          const result = await apiVote(currentQ, choiceIdx, q.choices.length);
+          const result = await fbVote(currentQ, choiceIdx);
           if (result.alreadyVoted) {
-            $("feedback").textContent = "\u26A0\uFE0F This tab already voted on this question.";
-            $("feedback").className   = "feedback warn";
+            $("feedback").textContent = "\u26A0\uFE0F Already voted on this question.";
+            $("feedback").className = "feedback warn";
           } else {
             const ok = choiceIdx === q.correctIndex;
             $("feedback").textContent = ok ? "\u2705 Correct!" : "\u274C Not quite.";
-            $("feedback").className   = "feedback " + (ok ? "correct" : "wrong");
+            $("feedback").className = "feedback " + (ok ? "correct" : "wrong");
           }
         } catch {
-          $("feedback").textContent = "\u26A0\uFE0F Vote failed \u2014 API not available.";
-          $("feedback").className   = "feedback warn";
+          $("feedback").textContent = "\u26A0\uFE0F Vote failed — check Firebase config.";
+          $("feedback").className = "feedback warn";
         }
       }
       await render();
     }
 
-    $("prevBtn").addEventListener("click", async () => {
-      currentQ = Math.max(0, currentQ - 1);
-      await render();
-    });
-
+    $("prevBtn").addEventListener("click", async () => { currentQ = Math.max(0, currentQ - 1); await render(); });
     $("nextBtn").addEventListener("click", async () => {
       if (answers[currentQ] === null) return;
       if (currentQ < QUIZ.questions.length - 1) currentQ++;
       await render();
     });
 
-    // Boot
-    render().catch(() => {
-      $("feedback").textContent = "\u26A0\uFE0F Could not load shared counts. Make sure /api/stats works + KV is configured.";
-      $("feedback").className   = "feedback warn";
-    });
+    /* ═══════════════════════════════════════════
+       BOOT — wait for Firebase or fallback
+       ═══════════════════════════════════════════ */
+    function boot() {
+      if (window._fb) {
+        fbReady = true;
+        $("liveTag").style.display = '';
+      } else {
+        fbReady = false;
+        $("setupBanner").style.display = '';
+        $("liveTag").querySelector('.live-dot').style.background = css('--warn');
+      }
+      render().catch(() => {});
+    }
+
+    // Firebase module loads async — wait for it or timeout
+    if (window._fb) {
+      boot();
+    } else {
+      const onReady = () => { boot(); window.removeEventListener('fb-ready', onReady); };
+      window.addEventListener('fb-ready', onReady);
+      // Fallback after 3s if Firebase fails to load
+      setTimeout(() => { if (!fbReady) boot(); }, 3000);
+    }
   </script>
 
 </body>
