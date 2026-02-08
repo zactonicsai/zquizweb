@@ -1,0 +1,9 @@
+{
+  "name": "teen-summit-quiz",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Teen Summit quiz with shared answer counts on Vercel KV",
+  "dependencies": {
+    "@vercel/kv": "^1.0.1"
+  }
+}

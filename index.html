@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mini Kahoot: Business Basics (Middle School)</title>
+  <title>Teen Summit — Business Basics Quiz</title>
 
   <!-- Tailwind via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,10 +14,10 @@
 <body class="min-h-screen bg-slate-50 text-slate-900">
   <header class="sticky top-0 z-20 border-b bg-white/90 backdrop-blur">
     <div class="mx-auto max-w-5xl px-4 py-3 flex items-center gap-3">
-      <div class="h-10 w-10 rounded-2xl bg-slate-900 text-white grid place-items-center font-black">Q</div>
+      <div class="h-10 w-10 rounded-2xl bg-slate-900 text-white grid place-items-center font-black">TS</div>
       <div class="flex-1">
-        <h1 class="text-lg sm:text-xl font-semibold leading-tight">Business Basics Quiz</h1>
-        <p class="text-xs sm:text-sm text-slate-600">Enter a Host ID (or use the link) • Answer 5 questions • See live-style counts</p>
+        <h1 class="text-lg sm:text-xl font-semibold leading-tight">Teen Summit — Business Basics</h1>
+        <p class="text-xs sm:text-sm text-slate-600">Join with a Host ID • Answer 5 questions • Shared live counts</p>
       </div>
       <div class="hidden sm:flex items-center gap-2">
         <span id="hostBadge" class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-sm font-medium">Host: —</span>
@@ -29,7 +29,7 @@
   </header>
 
   <main class="mx-auto max-w-5xl px-4 py-6">
-    <!-- Setup / Join -->
+    <!-- Join -->
     <section id="joinSection" class="grid gap-4">
       <div class="rounded-2xl border bg-white p-5 shadow-sm">
         <div class="flex flex-col sm:flex-row sm:items-end gap-3">
@@ -47,23 +47,19 @@
             </p>
           </div>
           <div class="rounded-2xl bg-slate-900 text-white p-4 sm:w-72">
-            <div class="text-xs uppercase tracking-wide text-slate-200">How it works</div>
+            <div class="text-xs uppercase tracking-wide text-slate-200">Shared stats</div>
             <ul class="mt-2 text-sm text-slate-100 space-y-1 list-disc list-inside">
-              <li>Pick an answer for each question.</li>
-              <li>Counts update like a “Kahoot board”.</li>
-              <li>Saved locally per browser (demo).</li>
+              <li>Counts are shared for everyone.</li>
+              <li>Same Host ID = same “room”.</li>
+              <li>Stored in Vercel KV via /api.</li>
             </ul>
           </div>
         </div>
       </div>
 
       <div class="rounded-2xl border bg-white p-5 shadow-sm">
-        <div class="flex items-center justify-between gap-3">
-          <div>
-            <h2 class="text-base font-semibold">Quick Hosts</h2>
-            <p class="text-sm text-slate-600">Tap to load a quiz set.</p>
-          </div>
-        </div>
+        <h2 class="text-base font-semibold">Quick Hosts</h2>
+        <p class="text-sm text-slate-600 mt-1">Tap to load a quiz set.</p>
         <div class="mt-4 flex flex-wrap gap-2">
           <button class="quickHost px-4 py-2 rounded-xl border bg-slate-50 hover:bg-slate-100 font-semibold" data-host="biz101">biz101</button>
           <button class="quickHost px-4 py-2 rounded-xl border bg-slate-50 hover:bg-slate-100 font-semibold" data-host="msbiz">msbiz</button>
@@ -74,7 +70,7 @@
     <!-- Quiz -->
     <section id="quizSection" class="hidden">
       <div class="grid lg:grid-cols-5 gap-4">
-        <!-- Left: question + answers -->
+        <!-- Question -->
         <div class="lg:col-span-3 rounded-2xl border bg-white p-5 shadow-sm">
           <div class="flex items-start justify-between gap-3">
             <div>
@@ -102,12 +98,12 @@
           </div>
         </div>
 
-        <!-- Right: chart + leaderboard-ish counts -->
+        <!-- Counts -->
         <div class="lg:col-span-2 rounded-2xl border bg-white p-5 shadow-sm">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-xs uppercase tracking-wide text-slate-500">Answer Counts</div>
-              <h3 class="text-base font-semibold">Live-style board</h3>
+              <div class="text-xs uppercase tracking-wide text-slate-500">Shared Answer Counts</div>
+              <h3 class="text-base font-semibold">Teen Summit Board</h3>
             </div>
             <button id="resetCountsBtn" class="text-xs font-semibold px-3 py-2 rounded-xl border hover:bg-slate-50">
               Reset Counts
@@ -138,18 +134,16 @@
           </div>
 
           <p class="mt-4 text-xs text-slate-500">
-            Demo note: “Answer counts” are stored in this browser using localStorage (per Host ID + Question).
-            For real Kahoot-style multi-user live results, you’d connect this to a server (WebSocket/Firebase/etc.).
+            These counts are shared for everyone using the same Host ID (stored by the backend).
           </p>
         </div>
       </div>
 
-      <!-- End screen -->
       <div id="endSection" class="hidden mt-4 rounded-2xl border bg-white p-5 shadow-sm">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h3 class="text-xl font-bold">You finished!</h3>
-            <p class="text-slate-600">Great job learning business basics.</p>
+            <p class="text-slate-600">Teen Summit complete — nice work.</p>
           </div>
           <div class="text-right">
             <div class="text-xs uppercase tracking-wide text-slate-500">Final Score</div>
@@ -159,7 +153,6 @@
       </div>
     </section>
 
-    <!-- Error -->
     <section id="errorSection" class="hidden">
       <div class="rounded-2xl border border-red-200 bg-red-50 p-5 text-red-900">
         <div class="font-bold">Host ID not found</div>
@@ -170,11 +163,11 @@
 
   <script>
     /***********************
-     * 1) JSON DATA (hostId -> quiz)
+     * Quiz sets by Host ID
      ***********************/
     const QUIZ_DATA = {
       biz101: {
-        title: "Business Basics (biz101)",
+        title: "Teen Summit — Business Basics (biz101)",
         questions: [
           {
             text: "What is a business?",
@@ -230,7 +223,7 @@
       },
 
       msbiz: {
-        title: "Start & Run a Business (msbiz)",
+        title: "Teen Summit — Start & Run a Business (msbiz)",
         questions: [
           {
             text: "A business is different from a job because…",
@@ -287,7 +280,38 @@
     };
 
     /***********************
-     * 2) STATE + HELPERS
+     * API helpers (shared)
+     ***********************/
+    async function apiGetCounts(host, q, choiceCount) {
+      const url = `/api/stats?host=${encodeURIComponent(host)}&q=${q}&choiceCount=${choiceCount}`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`GET stats failed (${r.status})`);
+      return r.json(); // { counts: [...] }
+    }
+
+    async function apiVote(host, q, choice, choiceCount) {
+      const r = await fetch("/api/stats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ host, q, choice, choiceCount })
+      });
+      if (!r.ok) throw new Error(`POST vote failed (${r.status})`);
+      return r.json(); // { counts: [...] }
+    }
+
+    async function apiResetHost(host, questionCount, choiceCounts) {
+      // If you did not add /api/reset.js, remove this feature.
+      const r = await fetch("/api/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ host, questionCount, choiceCounts })
+      });
+      if (!r.ok) throw new Error(`POST reset failed (${r.status})`);
+      return r.json();
+    }
+
+    /***********************
+     * UI + state
      ***********************/
     const $ = (id) => document.getElementById(id);
 
@@ -325,11 +349,11 @@
     let hostId = null;
     let quiz = null;
     let currentQ = 0;
-    let answers = []; // selected indices per question (null if not answered)
+    let answers = [];
     let score = 0;
 
-    // Chart.js
     let countsChart = null;
+    let chartLabels = [];
 
     function getHostFromUrl() {
       const url = new URL(window.location.href);
@@ -340,33 +364,6 @@
       const url = new URL(window.location.href);
       url.searchParams.set("host", h);
       history.replaceState({}, "", url.toString());
-    }
-
-    function storageKeyCounts(h, qIdx) {
-      return `kahoot_demo_counts::${h}::q${qIdx}`;
-    }
-
-    function readCounts(h, qIdx, choiceCount) {
-      const raw = localStorage.getItem(storageKeyCounts(h, qIdx));
-      if (!raw) return Array.from({length: choiceCount}, () => 0);
-      try {
-        const arr = JSON.parse(raw);
-        if (Array.isArray(arr) && arr.length === choiceCount) return arr.map(n => Number(n) || 0);
-        return Array.from({length: choiceCount}, () => 0);
-      } catch {
-        return Array.from({length: choiceCount}, () => 0);
-      }
-    }
-
-    function writeCounts(h, qIdx, countsArr) {
-      localStorage.setItem(storageKeyCounts(h, qIdx), JSON.stringify(countsArr));
-    }
-
-    function resetAllCountsForHost(h) {
-      if (!QUIZ_DATA[h]) return;
-      QUIZ_DATA[h].questions.forEach((q, idx) => {
-        writeCounts(h, idx, Array.from({length: q.choices.length}, () => 0));
-      });
     }
 
     function computeScore() {
@@ -380,24 +377,50 @@
       return answers.filter(a => a !== null && a !== undefined).length;
     }
 
+    function isFinished() {
+      return answeredCount() === quiz.questions.length;
+    }
+
     function updateProgressUI() {
       const total = quiz.questions.length;
       const done = answeredCount();
       answeredCountEl.textContent = String(done);
       answeredTotalEl.textContent = String(total);
-
-      const pct = Math.round((done / total) * 100);
-      progressBar.style.width = `${pct}%`;
+      progressBar.style.width = `${Math.round((done / total) * 100)}%`;
     }
 
-    function isFinished() {
-      return answeredCount() === quiz.questions.length;
+    async function updateCountsChart() {
+      const q = quiz.questions[currentQ];
+      const choiceCount = q.choices.length;
+
+      // shared counts from backend
+      const payload = await apiGetCounts(hostId, currentQ, choiceCount);
+      const counts = payload.counts;
+
+      chartLabels = q.choices.map((_, i) => String.fromCharCode(65 + i));
+      const ctx = $("countsChart").getContext("2d");
+
+      if (!countsChart) {
+        countsChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: chartLabels,
+            datasets: [{ label: "Answers", data: counts }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+          }
+        });
+      } else {
+        countsChart.data.labels = chartLabels;
+        countsChart.data.datasets[0].data = counts;
+        countsChart.update();
+      }
     }
 
-    /***********************
-     * 3) RENDER QUIZ
-     ***********************/
-    function renderQuestion() {
+    async function renderQuestion() {
       const total = quiz.questions.length;
       const q = quiz.questions[currentQ];
 
@@ -409,16 +432,13 @@
       computeScore();
       scoreEl.textContent = String(score);
 
-      // Buttons
       prevBtn.disabled = currentQ === 0;
       nextBtn.textContent = (currentQ === total - 1) ? "Finish" : "Next";
       nextBtn.disabled = answers[currentQ] === null;
 
-      // Feedback
       feedbackEl.textContent = "";
       feedbackEl.className = "text-sm font-semibold";
 
-      // Answers grid
       answersGrid.innerHTML = "";
       q.choices.forEach((choiceText, idx) => {
         const selected = answers[currentQ] === idx;
@@ -447,90 +467,49 @@
         answersGrid.appendChild(btn);
       });
 
-      updateCountsChart();
       updateProgressUI();
 
-      // End section visibility
       endSection.classList.toggle("hidden", !isFinished());
       if (isFinished()) {
         finalScoreEl.textContent = String(score);
         finalTotalEl.textContent = String(total);
       }
+
+      // update shared board
+      try {
+        await updateCountsChart();
+      } catch (e) {
+        // If backend isn't set up yet, show an error in feedback area
+        feedbackEl.textContent = "⚠️ Shared stats unavailable. Add Vercel KV + /api routes.";
+        feedbackEl.className = "text-sm font-semibold text-amber-700";
+      }
     }
 
-    function selectAnswer(choiceIdx) {
+    async function selectAnswer(choiceIdx) {
       const q = quiz.questions[currentQ];
-
-      // If first time answering this question, increment counts (demo "live board")
       const wasUnanswered = (answers[currentQ] === null);
-
       answers[currentQ] = choiceIdx;
 
-      // Update counts stored in localStorage
+      // submit vote only once per question per user attempt
       if (wasUnanswered) {
-        const counts = readCounts(hostId, currentQ, q.choices.length);
-        counts[choiceIdx] = (counts[choiceIdx] || 0) + 1;
-        writeCounts(hostId, currentQ, counts);
+        try {
+          await apiVote(hostId, currentQ, choiceIdx, q.choices.length);
+        } catch (e) {
+          // ignore vote failures but continue UI
+        }
       }
 
-      // Feedback correctness
       const correct = (choiceIdx === q.correctIndex);
-      feedbackEl.textContent = correct ? "✅ Correct!" : "❌ Not quite. Try to remember: business = value + customers + costs.";
+      feedbackEl.textContent = correct ? "✅ Correct!" : "❌ Not quite. Remember: a business creates value for customers.";
       feedbackEl.className = "text-sm font-semibold " + (correct ? "text-emerald-700" : "text-rose-700");
 
       computeScore();
       scoreEl.textContent = String(score);
       nextBtn.disabled = false;
 
-      renderQuestion(); // re-render to show selected styling + updated chart
+      await renderQuestion();
     }
 
-    /***********************
-     * 4) CHART
-     ***********************/
-    function updateCountsChart() {
-      const q = quiz.questions[currentQ];
-      const counts = readCounts(hostId, currentQ, q.choices.length);
-
-      const labels = q.choices.map((_, i) => String.fromCharCode(65 + i));
-      const data = counts;
-
-      const ctx = $("countsChart").getContext("2d");
-
-      if (!countsChart) {
-        countsChart = new Chart(ctx, {
-          type: "bar",
-          data: {
-            labels,
-            datasets: [{
-              label: "Answers",
-              data
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: { display: false },
-              tooltip: { enabled: true }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: { precision: 0 }
-              }
-            }
-          }
-        });
-      } else {
-        countsChart.data.labels = labels;
-        countsChart.data.datasets[0].data = data;
-        countsChart.update();
-      }
-    }
-
-    /***********************
-     * 5) NAVIGATION / FLOW
-     ***********************/
     function showQuizUI() {
       joinSection.classList.add("hidden");
       errorSection.classList.add("hidden");
@@ -539,24 +518,15 @@
       hostBadge.textContent = `Host: ${hostId}`;
       setHostInUrl(hostId);
 
-      // Initialize answers
       const total = quiz.questions.length;
       answers = Array.from({length: total}, () => null);
       currentQ = 0;
       score = 0;
 
-      // Total UI
       qTotalEl.textContent = String(total);
       scoreTotalEl.textContent = String(total);
       answeredTotalEl.textContent = String(total);
 
-      // Ensure counts exist
-      quiz.questions.forEach((q, idx) => {
-        const existing = localStorage.getItem(storageKeyCounts(hostId, idx));
-        if (!existing) writeCounts(hostId, idx, Array.from({length: q.choices.length}, () => 0));
-      });
-
-      // Reset chart instance if any
       if (countsChart) {
         countsChart.destroy();
         countsChart = null;
@@ -584,13 +554,9 @@
       hostId = candidate;
       quiz = QUIZ_DATA[hostId];
       document.title = quiz.title;
-      $("hostBadge").textContent = `Host: ${hostId}`;
       showQuizUI();
     }
 
-    /***********************
-     * 6) EVENTS
-     ***********************/
     joinBtn.addEventListener("click", () => joinHost(hostIdInput.value));
     hostIdInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") joinHost(hostIdInput.value);
@@ -611,7 +577,6 @@
     nextBtn.addEventListener("click", () => {
       const total = quiz.questions.length;
       if (currentQ === total - 1) {
-        // Finish: stay on last question but show end section
         renderQuestion();
         endSection.classList.remove("hidden");
         return;
@@ -625,12 +590,10 @@
       answers = Array.from({length: total}, () => null);
       currentQ = 0;
       score = 0;
-      if (countsChart) { countsChart.update(); }
       renderQuestion();
     });
 
     backToJoinBtn.addEventListener("click", () => {
-      // keep host in input for convenience
       hostIdInput.value = hostId || "";
       quizSection.classList.add("hidden");
       errorSection.classList.add("hidden");
@@ -638,16 +601,25 @@
       endSection.classList.add("hidden");
       hostBadge.textContent = "Host: —";
 
-      // remove host from URL
       const url = new URL(window.location.href);
       url.searchParams.delete("host");
       history.replaceState({}, "", url.toString());
     });
 
-    resetCountsBtn.addEventListener("click", () => {
-      if (!hostId) return;
-      resetAllCountsForHost(hostId);
-      updateCountsChart();
+    resetCountsBtn.addEventListener("click", async () => {
+      if (!hostId || !quiz) return;
+
+      // If you didn't add /api/reset.js, remove this entire handler.
+      const questionCount = quiz.questions.length;
+      const choiceCounts = quiz.questions.map(q => q.choices.length);
+
+      try {
+        await apiResetHost(hostId, questionCount, choiceCounts);
+        await updateCountsChart();
+      } catch (e) {
+        feedbackEl.textContent = "⚠️ Reset unavailable. Add /api/reset.js (optional).";
+        feedbackEl.className = "text-sm font-semibold text-amber-700";
+      }
     });
 
     copyLinkBtn.addEventListener("click", async () => {
@@ -663,9 +635,6 @@
       }
     });
 
-    /***********************
-     * 7) BOOTSTRAP FROM URL
-     ***********************/
     (function init() {
       const fromUrl = getHostFromUrl();
       if (fromUrl) {
