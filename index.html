@@ -40,7 +40,6 @@
       --shadow-md: 0 4px 14px rgba(26,22,18,0.09);
       --radius: 16px;
       --radius-sm: 12px;
-      --radius-xs: 6px;
       --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -85,7 +84,6 @@
       overflow-x: hidden;
     }
 
-    /* ─── Header ─── */
     header {
       position: sticky; top: 0; z-index: 20;
       background: var(--bg-secondary);
@@ -93,70 +91,36 @@
       transition: background var(--transition), border-color var(--transition);
     }
     .header-inner {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      max-width: 1080px; margin: 0 auto; padding: 12px 16px;
+      display: flex; align-items: center; gap: 12px;
     }
     .logo {
-      width: 40px; height: 40px;
-      border-radius: 12px;
-      background: var(--accent);
-      color: #fff;
-      display: grid;
-      place-items: center;
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-weight: 800;
-      font-size: 15px;
-      flex-shrink: 0;
+      width: 40px; height: 40px; border-radius: 12px; background: var(--accent);
+      color: #fff; display: grid; place-items: center;
+      font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 15px; flex-shrink: 0;
     }
     .header-text { flex: 1; min-width: 0; }
     .header-title {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1rem;
-      font-weight: 800;
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-family: 'Bricolage Grotesque', sans-serif; font-size: 1rem; font-weight: 800;
+      line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .header-sub { font-size: 0.72rem; color: var(--text-secondary); margin-top: 1px; }
     .header-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
     .host-badge {
-      padding: 5px 12px;
-      border-radius: 100px;
-      background: var(--bg-tertiary);
-      color: var(--text-secondary);
-      font-size: 0.72rem;
-      font-weight: 600;
-      white-space: nowrap;
-      transition: background var(--transition);
+      padding: 5px 12px; border-radius: 100px; background: var(--bg-tertiary);
+      color: var(--text-secondary); font-size: 0.72rem; font-weight: 600;
+      white-space: nowrap; transition: background var(--transition);
     }
     .icon-btn {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      font-size: 16px;
-      transition: all var(--transition);
-      flex-shrink: 0;
-      -webkit-appearance: none;
+      width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--bg-tertiary); color: var(--text-primary); cursor: pointer;
+      display: grid; place-items: center; font-size: 16px; transition: all var(--transition);
+      flex-shrink: 0; -webkit-appearance: none;
     }
     .icon-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
     .icon-btn:active { transform: scale(0.92); }
 
-    /* ─── Layout ─── */
-    main {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 16px 16px calc(16px + var(--safe-bottom));
-    }
+    main { max-width: 1080px; margin: 0 auto; padding: 16px 16px calc(16px + var(--safe-bottom)); }
     .layout { display: flex; flex-direction: column; gap: 16px; }
     @media (min-width: 860px) {
       main { padding: 24px 20px 40px; }
@@ -165,37 +129,28 @@
     @media (min-width: 1060px) { .layout { grid-template-columns: 1fr 400px; } }
 
     .card {
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--bg-secondary);
-      padding: 20px;
-      box-shadow: var(--shadow-sm);
+      border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg-secondary);
+      padding: 20px; box-shadow: var(--shadow-sm);
       transition: background var(--transition), border-color var(--transition);
     }
     @media (min-width: 860px) { .card { padding: 24px; } }
 
-    /* ─── Question ─── */
     .q-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
     .q-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); }
-    .q-text {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1.15rem; font-weight: 800; line-height: 1.3; margin-top: 6px;
-    }
+    .q-text { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.15rem; font-weight: 800; line-height: 1.3; margin-top: 6px; }
     @media (min-width: 560px) { .q-text { font-size: 1.3rem; } }
     .score-box { text-align: right; flex-shrink: 0; }
     .score-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); }
     .score-value { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.6rem; font-weight: 800; line-height: 1; letter-spacing: -1px; }
 
-    /* ─── Answers ─── */
     .answers-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 18px; }
     @media (min-width: 560px) { .answers-grid { grid-template-columns: 1fr 1fr; gap: 12px; } }
 
     .answer-btn {
       text-align: left; border-radius: var(--radius-sm); border: 2px solid var(--border);
-      background: var(--bg-secondary); padding: 14px; cursor: pointer;
-      transition: all 0.18s ease; display: flex; align-items: center; gap: 12px;
-      font-family: inherit; color: var(--text-primary); -webkit-appearance: none;
-      min-height: 56px; touch-action: manipulation;
+      background: var(--bg-secondary); padding: 14px; cursor: pointer; transition: all 0.18s ease;
+      display: flex; align-items: center; gap: 12px; font-family: inherit;
+      color: var(--text-primary); -webkit-appearance: none; min-height: 56px; touch-action: manipulation;
     }
     .answer-btn:hover { border-color: var(--accent); box-shadow: var(--shadow-md); transform: translateY(-1px); }
     .answer-btn:active { transform: scale(0.98); }
@@ -213,7 +168,6 @@
     .answer-text { font-weight: 600; line-height: 1.35; font-size: 0.88rem; }
     .answer-hint { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
 
-    /* ─── Step Dots ─── */
     .step-dots { display: flex; justify-content: center; gap: 8px; margin-top: 18px; padding: 4px 0; }
     .step-dot {
       width: 10px; height: 10px; border-radius: 100px; background: var(--progress-track);
@@ -224,10 +178,9 @@
     .step-dot.answered { background: var(--correct); }
     .step-dot.answered.active { background: var(--accent); width: 28px; }
 
-    /* ─── Footer ─── */
     .q-footer { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
     @media (min-width: 480px) { .q-footer { flex-direction: row; align-items: center; justify-content: space-between; } }
-    .feedback { font-size: 0.85rem; font-weight: 700; min-height: 22px; display: flex; align-items: center; gap: 6px; }
+    .feedback { font-size: 0.85rem; font-weight: 700; min-height: 22px; }
     .feedback.correct { color: var(--correct); }
     .feedback.wrong { color: var(--wrong); }
     .feedback.warn { color: var(--warn); }
@@ -245,20 +198,20 @@
     .nav-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
     .nav-btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
 
-    /* ─── Sidebar ─── */
     .sidebar-stack { display: flex; flex-direction: column; gap: 16px; }
 
-    /* ─── Chart ─── */
     .chart-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
     .chart-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); }
     .chart-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1rem; font-weight: 800; margin-top: 1px; }
     .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--correct); margin-right: 4px; animation: pulse-dot 2s ease infinite; }
+    .live-dot.off { background: var(--text-muted); animation: none; }
     @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
     .live-tag {
       display: inline-flex; align-items: center; font-size: 0.68rem; font-weight: 700;
       color: var(--correct); padding: 3px 10px 3px 8px; background: rgba(26,153,86,0.1); border-radius: 100px;
     }
-    [data-theme="dark"] .live-tag { background: rgba(45,212,122,0.12); }
+    .live-tag.off { color: var(--text-muted); background: var(--bg-tertiary); }
+    [data-theme="dark"] .live-tag:not(.off) { background: rgba(45,212,122,0.12); }
     .chart-wrap { margin-top: 14px; }
 
     .vote-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
@@ -270,7 +223,6 @@
     .vote-chip-dot { width: 8px; height: 8px; border-radius: 50%; }
     .total-votes { margin-top: 10px; font-size: 0.72rem; color: var(--text-muted); }
 
-    /* ─── Progress ─── */
     .progress-card {
       border-radius: var(--radius-sm); background: var(--bg-tertiary); border: 1px solid var(--border);
       padding: 16px; transition: background var(--transition), border-color var(--transition);
@@ -282,7 +234,6 @@
     .progress-info strong { color: var(--text-primary); font-weight: 700; }
     .progress-meta { margin-top: 6px; font-size: 0.68rem; color: var(--text-muted); }
 
-    /* ─── Finish ─── */
     .finish-card { border: 2px solid var(--accent) !important; background: var(--accent-soft) !important; animation: pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1); }
     .finish-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
     .finish-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.2rem; font-weight: 800; }
@@ -291,15 +242,13 @@
     .finish-score-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); text-align: right; }
     @keyframes pop-in { 0%{transform:scale(0.92);opacity:0} 100%{transform:scale(1);opacity:1} }
 
-    /* ─── Connection banner ─── */
     .conn-banner {
       padding: 10px 16px; border-radius: var(--radius-sm); font-size: 0.78rem;
       font-weight: 600; line-height: 1.5; margin-bottom: 16px; display: none;
     }
-    .conn-banner.ok { background: rgba(26,153,86,0.1); color: var(--correct); }
     .conn-banner.err { background: rgba(217,54,54,0.1); color: var(--wrong); display: block; }
+    .conn-banner.ok  { background: rgba(26,153,86,0.1); color: var(--correct); display: block; }
 
-    /* ─── Confetti ─── */
     .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 100; overflow: hidden; }
     .confetti-piece { position: absolute; top: -20px; animation: confetti-fall 3s ease-in forwards; }
     @keyframes confetti-fall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
@@ -359,7 +308,7 @@
               <div class="chart-label">Live Results</div>
               <div class="chart-title">Answer Distribution</div>
             </div>
-            <span class="live-tag" id="liveTag"><span class="live-dot"></span>Live</span>
+            <span class="live-tag" id="liveTag"><span class="live-dot" id="liveDot"></span><span id="liveText">Connecting…</span></span>
           </div>
           <div class="chart-wrap">
             <canvas id="countsChart" height="190"></canvas>
@@ -375,7 +324,7 @@
             <span>Answered: <strong><span id="answeredCount">0</span></strong> / <strong><span id="answeredTotal">5</span></strong></span>
             <span><strong id="pctLabel">0%</strong></span>
           </div>
-          <div class="progress-meta">ID: <span id="clientBadge"></span> · Tab: <span id="tabBadge"></span></div>
+          <div class="progress-meta">Your ID: <span id="clientBadge"></span></div>
         </div>
 
         <div id="endSection" class="card finish-card" style="display:none">
@@ -396,37 +345,31 @@
 
   <script>
     /* ═══════════════════════════════════════════════════════════
-       CONFIG — Set your deployed Vercel API URL here
+       CONFIG — Point this to your deployed quiz-api URL
        ═══════════════════════════════════════════════════════════ */
-    const API_BASE = "https://zquizwebdb.vercel.app";
-    // ↑ Examples:
-    //   ""                                   ← same origin (API + quiz on same Vercel project)
-    //   "https://quiz-api-xyz.vercel.app"    ← separate deployment
-    //   "http://localhost:3000"               ← local dev
+    const API_BASE = "";
+    // Examples:
+    //   ""                                  ← same origin (both on same Vercel project)
+    //   "https://my-quiz-api.vercel.app"    ← separate Vercel deployment
 
-    const POLL_INTERVAL = 1500; // ms — how often to refresh the chart
+    const POLL_MS = 1500;  // Poll interval in milliseconds
 
     /* ═══════════════════════════════════════════
        THEME
        ═══════════════════════════════════════════ */
-    const themeBtn = document.getElementById('themeBtn');
-    const metaTheme = document.getElementById('metaTheme');
+    const themeBtn = document.getElementById("themeBtn");
+    const metaTheme = document.getElementById("metaTheme");
     function applyTheme(dark) {
-      if (dark) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        themeBtn.textContent = '🌙';
-        metaTheme.content = '#0e0e0e';
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-        themeBtn.textContent = '☀️';
-        metaTheme.content = '#f5f0eb';
-      }
-      localStorage.setItem('ts_theme', dark ? 'dark' : 'light');
+      document.documentElement.setAttribute("data-theme", dark ? "dark" : "");
+      if (!dark) document.documentElement.removeAttribute("data-theme");
+      themeBtn.textContent = dark ? "🌙" : "☀️";
+      metaTheme.content = dark ? "#0e0e0e" : "#f5f0eb";
+      localStorage.setItem("ts_theme", dark ? "dark" : "light");
       if (chart) updateChartTheme();
     }
-    if (localStorage.getItem('ts_theme') === 'dark') applyTheme(true);
-    themeBtn.addEventListener('click', () => {
-      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark');
+    if (localStorage.getItem("ts_theme") === "dark") applyTheme(true);
+    themeBtn.addEventListener("click", () => {
+      applyTheme(document.documentElement.getAttribute("data-theme") !== "dark");
     });
 
     /* ═══════════════════════════════════════════
@@ -443,54 +386,67 @@
     };
 
     /* ═══════════════════════════════════════════
-       STATE & IDs
+       CLIENT ID — one per browser, stored in localStorage
+       This is the ONLY identifier used for vote dedup.
+       Every browser gets one vote per question, regardless
+       of how many tabs are open.
        ═══════════════════════════════════════════ */
     const $ = (id) => document.getElementById(id);
     const pageUrl = new URL(window.location.href);
     const host = (pageUrl.searchParams.get("host") || "teensummit").trim();
 
-    function ensureId(storage, key) {
-      let v = storage.getItem(key);
-      if (!v) { v = crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now(); storage.setItem(key, v); }
-      return v;
+    let clientId = localStorage.getItem("ts_client_id");
+    if (!clientId) {
+      clientId = crypto.randomUUID
+        ? crypto.randomUUID()
+        : "c-" + Date.now() + "-" + Math.random().toString(36).slice(2, 10);
+      localStorage.setItem("ts_client_id", clientId);
     }
-    const clientId = ensureId(localStorage, "teen_summit_client_id");
-    const tabId    = ensureId(sessionStorage, "teen_summit_tab_id");
 
-    $("hostBadge").textContent   = "Host: " + host;
-    $("clientBadge").textContent  = clientId.slice(0, 8);
-    $("tabBadge").textContent     = tabId.slice(0, 8);
+    $("hostBadge").textContent  = "Host: " + host;
+    $("clientBadge").textContent = clientId.slice(0, 12);
 
-    let currentQ = 0;
-    let answers  = Array.from({ length: QUIZ.questions.length }, () => null);
-    let score    = 0;
-    let chart    = null;
-    let pollTimer = null;
-    let apiOnline = true;
+    /* ═══════════════════════════════════════════
+       STATE
+       ═══════════════════════════════════════════ */
+    let currentQ   = 0;
+    let answers    = Array(QUIZ.questions.length).fill(null);
+    let score      = 0;
+    let chart      = null;
+    let pollTimer  = null;
+    let apiOnline  = false;
+    let pollActive = false;
 
-    const CHART_VARS    = ['--chart-a','--chart-b','--chart-c','--chart-d'];
-    const BADGE_CLASSES = ['badge-a','badge-b','badge-c','badge-d'];
-    const BADGE_LABELS  = ['A','B','C','D'];
+    const CHART_VARS    = ["--chart-a","--chart-b","--chart-c","--chart-d"];
+    const BADGE_CLASSES = ["badge-a","badge-b","badge-c","badge-d"];
+    const BADGE_LABELS  = ["A","B","C","D"];
 
     function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
     /* ═══════════════════════════════════════════
-       API CALLS
+       API — all calls go to your Vercel KV backend
        ═══════════════════════════════════════════ */
     async function apiGet(qIdx) {
-      const q = QUIZ.questions[qIdx];
-      const url = API_BASE + "/api/stats?host=" + encodeURIComponent(host) + "&q=" + qIdx + "&choiceCount=" + q.choices.length;
+      const cc = QUIZ.questions[qIdx].choices.length;
+      const url = API_BASE + "/api/stats?host=" + encodeURIComponent(host)
+        + "&q=" + qIdx + "&choiceCount=" + cc;
       const r = await fetch(url);
       if (!r.ok) throw new Error("GET " + r.status);
       return r.json();
     }
 
     async function apiVote(qIdx, choice) {
-      const q = QUIZ.questions[qIdx];
+      const cc = QUIZ.questions[qIdx].choices.length;
       const r = await fetch(API_BASE + "/api/stats", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ host, q: qIdx, choice, choiceCount: q.choices.length, clientId, tabId })
+        body: JSON.stringify({
+          host: host,
+          q: qIdx,
+          choice: choice,
+          choiceCount: cc,
+          clientId: clientId        // ← stable per-browser ID
+        })
       });
       if (!r.ok) throw new Error("POST " + r.status);
       return r.json();
@@ -499,23 +455,32 @@
     /* ═══════════════════════════════════════════
        CONNECTION CHECK
        ═══════════════════════════════════════════ */
-    async function checkConnection() {
+    async function checkApi() {
       try {
         await apiGet(0);
         apiOnline = true;
         $("connBanner").style.display = "none";
-      } catch {
+        setLiveStatus(true);
+      } catch (e) {
         apiOnline = false;
-        $("connBanner").className = "conn-banner err";
-        $("connBanner").style.display = "block";
-        $("connBanner").textContent = API_BASE
-          ? "\u26A0\uFE0F Cannot reach API at " + API_BASE + " \u2014 votes won\u2019t sync. Check the URL or deployment."
-          : "\u26A0\uFE0F API not found at this origin. Set API_BASE in the script or deploy the quiz-api project.";
+        setLiveStatus(false);
+        const b = $("connBanner");
+        b.className = "conn-banner err";
+        b.style.display = "block";
+        b.textContent = API_BASE
+          ? "\u26A0\uFE0F Cannot reach API at " + API_BASE + " — check URL or deployment."
+          : "\u26A0\uFE0F API not found. Set API_BASE in the <script> section, or deploy both on the same Vercel project.";
       }
     }
 
+    function setLiveStatus(on) {
+      $("liveDot").className = on ? "live-dot" : "live-dot off";
+      $("liveTag").className = on ? "live-tag" : "live-tag off";
+      $("liveText").textContent = on ? "Live" : "Offline";
+    }
+
     /* ═══════════════════════════════════════════
-       SCORING & PROGRESS
+       SCORING / PROGRESS
        ═══════════════════════════════════════════ */
     function computeScore() {
       score = 0;
@@ -530,13 +495,14 @@
       const pct = Math.round((done / total) * 100);
       $("progressBar").style.width = pct + "%";
       $("pctLabel").textContent = pct + "%";
+
       if (done === total) {
-        $("endSection").style.display = '';
+        $("endSection").style.display = "";
         $("finalScore").textContent = score;
         $("finalTotal").textContent = total;
         fireConfetti();
       } else {
-        $("endSection").style.display = 'none';
+        $("endSection").style.display = "none";
       }
     }
 
@@ -551,7 +517,7 @@
         if (i === currentQ) d.classList.add("active");
         if (answers[i] !== null) d.classList.add("answered");
         d.setAttribute("aria-label", "Question " + (i + 1));
-        d.addEventListener("click", async () => { currentQ = i; await render(); });
+        d.addEventListener("click", () => { currentQ = i; render(); });
         el.appendChild(d);
       });
     }
@@ -566,13 +532,13 @@
       const c = chartColors();
       chart.data.datasets[0].backgroundColor = c;
       chart.data.datasets[0].borderColor = c;
-      chart.options.scales.x.ticks.color = css('--text-secondary');
-      chart.options.scales.y.ticks.color = css('--text-secondary');
-      chart.options.scales.y.grid.color  = css('--border');
-      chart.update('none');
+      chart.options.scales.x.ticks.color = css("--text-secondary");
+      chart.options.scales.y.ticks.color = css("--text-secondary");
+      chart.options.scales.y.grid.color  = css("--border");
+      chart.update("none");
     }
 
-    function updateChart(counts) {
+    function drawChart(counts) {
       const labels = QUIZ.questions[currentQ].choices.map((_, i) => BADGE_LABELS[i]);
       const colors = chartColors();
 
@@ -582,11 +548,11 @@
           data: { labels, datasets: [{ data: counts, backgroundColor: colors, borderColor: colors, borderWidth: 0, borderRadius: 8, borderSkipped: false, barPercentage: 0.6, categoryPercentage: 0.7 }] },
           options: {
             responsive: true, maintainAspectRatio: true,
-            animation: { duration: 400, easing: 'easeOutQuart' },
-            plugins: { legend: { display: false }, tooltip: { backgroundColor: css('--bg-secondary'), titleColor: css('--text-primary'), bodyColor: css('--text-primary'), borderColor: css('--border'), borderWidth: 1, cornerRadius: 8, padding: 10, displayColors: true, callbacks: { label: (ctx) => " " + ctx.parsed.y + " vote" + (ctx.parsed.y !== 1 ? "s" : "") } } },
+            animation: { duration: 350, easing: "easeOutQuart" },
+            plugins: { legend: { display: false }, tooltip: { backgroundColor: css("--bg-secondary"), titleColor: css("--text-primary"), bodyColor: css("--text-primary"), borderColor: css("--border"), borderWidth: 1, cornerRadius: 8, padding: 10, callbacks: { label: (c) => " " + c.parsed.y + " vote" + (c.parsed.y !== 1 ? "s" : "") } } },
             scales: {
-              y: { beginAtZero: true, ticks: { precision: 0, color: css('--text-secondary'), font: { size: 11, weight: '600' } }, grid: { color: css('--border'), drawBorder: false }, border: { display: false } },
-              x: { ticks: { color: css('--text-secondary'), font: { size: 13, weight: '700' } }, grid: { display: false }, border: { display: false } }
+              y: { beginAtZero: true, ticks: { precision: 0, color: css("--text-secondary"), font: { size: 11, weight: "600" } }, grid: { color: css("--border"), drawBorder: false }, border: { display: false } },
+              x: { ticks: { color: css("--text-secondary"), font: { size: 13, weight: "700" } }, grid: { display: false }, border: { display: false } }
             }
           }
         });
@@ -602,30 +568,38 @@
       const chips = $("voteChips"); chips.innerHTML = "";
       const total = counts.reduce((a, b) => a + b, 0);
       counts.forEach((c, i) => {
-        const chip = document.createElement("span");
-        chip.className = "vote-chip";
-        chip.innerHTML = '<span class="vote-chip-dot" style="background:' + colors[i] + '"></span>' + BADGE_LABELS[i] + ': ' + c;
-        chips.appendChild(chip);
+        const el = document.createElement("span");
+        el.className = "vote-chip";
+        el.innerHTML = '<span class="vote-chip-dot" style="background:' + colors[i] + '"></span>' + BADGE_LABELS[i] + ": " + c;
+        chips.appendChild(el);
       });
-      $("totalVotesLabel").textContent = total + " total vote" + (total !== 1 ? "s" : "") + " on this question";
+      $("totalVotesLabel").textContent = total + " total vote" + (total !== 1 ? "s" : "");
     }
 
-    /* ─── Polling ─── */
-    async function pollCounts() {
+    /* ═══════════════════════════════════════════
+       POLLING — fetches fresh counts every POLL_MS
+       ═══════════════════════════════════════════ */
+    async function pollOnce() {
       if (!apiOnline) return;
       try {
         const data = await apiGet(currentQ);
-        updateChart(data.counts);
-      } catch { /* silent */ }
+        drawChart(data.counts);
+      } catch {
+        // Silent fail — keep polling, it'll recover
+      }
     }
 
     function startPolling() {
       stopPolling();
-      pollTimer = setInterval(pollCounts, POLL_INTERVAL);
+      pollActive = true;
+      // Immediate first poll
+      pollOnce();
+      pollTimer = setInterval(pollOnce, POLL_MS);
     }
+
     function stopPolling() {
-      if (pollTimer) clearInterval(pollTimer);
-      pollTimer = null;
+      pollActive = false;
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
     }
 
     /* ═══════════════════════════════════════════
@@ -634,26 +608,26 @@
     let confettiFired = false;
     function fireConfetti() {
       if (confettiFired) return; confettiFired = true;
-      const c = document.createElement('div'); c.className = 'confetti-container'; document.body.appendChild(c);
-      const pal = ['#e85d2a','#3b7ddd','#1a9956','#9b59b6','#f1c40f','#e74c3c'];
+      const c = document.createElement("div"); c.className = "confetti-container"; document.body.appendChild(c);
+      const pal = ["#e85d2a","#3b7ddd","#1a9956","#9b59b6","#f1c40f","#e74c3c"];
       for (let i = 0; i < 55; i++) {
-        const p = document.createElement('div'); p.className = 'confetti-piece';
-        p.style.left = Math.random()*100+'%'; p.style.background = pal[Math.floor(Math.random()*pal.length)];
-        p.style.animationDelay = Math.random()*1.5+'s'; p.style.animationDuration = (2+Math.random()*2)+'s';
-        p.style.borderRadius = Math.random()>0.5?'50%':'2px';
-        const s = 6+Math.random()*8; p.style.width=s+'px'; p.style.height=s+'px'; c.appendChild(p);
+        const p = document.createElement("div"); p.className = "confetti-piece";
+        p.style.left = Math.random()*100+"%"; p.style.background = pal[Math.floor(Math.random()*pal.length)];
+        p.style.animationDelay = Math.random()*1.5+"s"; p.style.animationDuration = (2+Math.random()*2)+"s";
+        p.style.borderRadius = Math.random()>0.5?"50%":"2px";
+        const s = 6+Math.random()*8; p.style.width=s+"px"; p.style.height=s+"px"; c.appendChild(p);
       }
       setTimeout(() => c.remove(), 5000);
     }
 
     /* ═══════════════════════════════════════════
-       RENDER
+       RENDER — draws the entire UI for currentQ
        ═══════════════════════════════════════════ */
     async function render() {
       const q = QUIZ.questions[currentQ];
-      $("qIndex").textContent = currentQ + 1;
-      $("qTotal").textContent  = QUIZ.questions.length;
-      $("qText").textContent   = q.text;
+      $("qIndex").textContent    = currentQ + 1;
+      $("qTotal").textContent    = QUIZ.questions.length;
+      $("qText").textContent     = q.text;
 
       computeScore();
       $("score").textContent      = score;
@@ -666,15 +640,16 @@
       $("feedback").textContent = "";
       $("feedback").className   = "feedback";
 
+      // Answer buttons
       const grid = $("answersGrid"); grid.innerHTML = "";
       q.choices.forEach((text, idx) => {
         const sel = answers[currentQ] === idx;
         const btn = document.createElement("button");
         btn.className = "answer-btn" + (sel ? " selected" : "");
         btn.innerHTML =
-          '<div class="answer-badge ' + (sel ? '' : BADGE_CLASSES[idx]) + '">' + BADGE_LABELS[idx] + '</div>' +
-          '<div class="answer-content"><div class="answer-text">' + text + '</div>' +
-          '<div class="answer-hint">' + (sel ? 'Selected' : 'Tap to select') + '</div></div>';
+          '<div class="answer-badge ' + (sel ? "" : BADGE_CLASSES[idx]) + '">' + BADGE_LABELS[idx] + "</div>" +
+          '<div class="answer-content"><div class="answer-text">' + text + "</div>" +
+          '<div class="answer-hint">' + (sel ? "Selected" : "Tap to select") + "</div></div>";
         btn.addEventListener("click", () => selectAnswer(idx));
         grid.appendChild(btn);
       });
@@ -682,16 +657,23 @@
       renderStepDots();
       updateProgress();
 
-      // Load chart & start polling
-      try {
-        const data = await apiGet(currentQ);
-        updateChart(data.counts);
-      } catch {
-        updateChart(Array(q.choices.length).fill(0));
+      // Load initial chart data, then start polling
+      if (apiOnline) {
+        try {
+          const data = await apiGet(currentQ);
+          drawChart(data.counts);
+        } catch {
+          drawChart(Array(q.choices.length).fill(0));
+        }
+      } else {
+        drawChart(Array(q.choices.length).fill(0));
       }
       startPolling();
     }
 
+    /* ═══════════════════════════════════════════
+       SELECT ANSWER — sends vote to API
+       ═══════════════════════════════════════════ */
     async function selectAnswer(choiceIdx) {
       const q = QUIZ.questions[currentQ];
       const wasUnanswered = answers[currentQ] === null;
@@ -700,16 +682,21 @@
       if (wasUnanswered && apiOnline) {
         try {
           const result = await apiVote(currentQ, choiceIdx);
+
           if (result.alreadyVoted) {
-            $("feedback").textContent = "\u26A0\uFE0F Already voted on this question.";
+            $("feedback").textContent = "\u26A0\uFE0F You already voted on this question.";
             $("feedback").className = "feedback warn";
           } else {
             const ok = choiceIdx === q.correctIndex;
             $("feedback").textContent = ok ? "\u2705 Correct!" : "\u274C Not quite.";
             $("feedback").className = "feedback " + (ok ? "correct" : "wrong");
           }
+
+          // Immediately refresh chart with the response data
+          if (result.counts) drawChart(result.counts);
+
         } catch {
-          $("feedback").textContent = "\u26A0\uFE0F Vote failed \u2014 check API connection.";
+          $("feedback").textContent = "\u26A0\uFE0F Vote failed — check API.";
           $("feedback").className = "feedback warn";
         }
       } else if (wasUnanswered) {
@@ -717,20 +704,27 @@
         $("feedback").textContent = ok ? "\u2705 Correct! (offline)" : "\u274C Not quite. (offline)";
         $("feedback").className = "feedback " + (ok ? "correct" : "wrong");
       }
+
       await render();
     }
 
-    $("prevBtn").addEventListener("click", async () => { currentQ = Math.max(0, currentQ - 1); await render(); });
-    $("nextBtn").addEventListener("click", async () => {
+    /* ═══════════════════════════════════════════
+       NAV BUTTONS
+       ═══════════════════════════════════════════ */
+    $("prevBtn").addEventListener("click", () => {
+      currentQ = Math.max(0, currentQ - 1);
+      render();
+    });
+    $("nextBtn").addEventListener("click", () => {
       if (answers[currentQ] === null) return;
       if (currentQ < QUIZ.questions.length - 1) currentQ++;
-      await render();
+      render();
     });
 
     /* ═══════════════════════════════════════════
        BOOT
        ═══════════════════════════════════════════ */
-    checkConnection().then(() => render());
+    checkApi().then(() => render());
   </script>
 
 </body>
