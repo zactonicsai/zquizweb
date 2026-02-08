@@ -4,50 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#f5f0eb" id="metaTheme">
   <title>Teen Summit — Business Basics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-  <!-- ═══════════════════════════════════════════════════
-       FIREBASE — Replace with YOUR config from console.firebase.google.com
-       1. Create a project  →  Build → Realtime Database → Create
-       2. Set rules to:  { "rules": { ".read": true, ".write": true } }
-       3. Copy your config below
-       ═══════════════════════════════════════════════════ -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue, runTransaction }
-      from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
-
-    // ┌─────────────────────────────────────────────────┐
-    // │  PASTE YOUR FIREBASE CONFIG HERE                │
-    // └─────────────────────────────────────────────────┘
-    const firebaseConfig = {
-      apiKey:            "YOUR_API_KEY",
-      authDomain:        "YOUR_PROJECT.firebaseapp.com",
-      databaseURL:       "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-      projectId:         "YOUR_PROJECT",
-      storageBucket:     "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "000000000000",
-      appId:             "1:000000000000:web:abcdef1234567890"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db  = getDatabase(app);
-
-    // Expose to global scope for the quiz logic
-    window._fb = { db, ref, set, get, onValue, runTransaction };
-    window.dispatchEvent(new Event("fb-ready"));
-  </script>
-
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ═══════ LIGHT THEME ═══════ */
     :root {
       --bg-primary: #f5f0eb;
       --bg-secondary: #ffffff;
@@ -80,7 +45,6 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    /* ═══════ DARK THEME ═══════ */
     [data-theme="dark"] {
       --bg-primary: #0e0e0e;
       --bg-secondary: #191919;
@@ -154,16 +118,11 @@
       font-size: 1rem;
       font-weight: 800;
       line-height: 1.2;
-      letter-spacing: -0.3px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .header-sub {
-      font-size: 0.72rem;
-      color: var(--text-secondary);
-      margin-top: 1px;
-    }
+    .header-sub { font-size: 0.72rem; color: var(--text-secondary); margin-top: 1px; }
     .header-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
     .host-badge {
       padding: 5px 12px;
@@ -189,38 +148,22 @@
       flex-shrink: 0;
       -webkit-appearance: none;
     }
-    .icon-btn:hover {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
+    .icon-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
     .icon-btn:active { transform: scale(0.92); }
 
-    /* ─── Main ─── */
+    /* ─── Layout ─── */
     main {
       max-width: 1080px;
       margin: 0 auto;
       padding: 16px 16px calc(16px + var(--safe-bottom));
     }
-    .layout {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+    .layout { display: flex; flex-direction: column; gap: 16px; }
     @media (min-width: 860px) {
       main { padding: 24px 20px 40px; }
-      .layout {
-        display: grid;
-        grid-template-columns: 1fr 360px;
-        gap: 20px;
-        align-items: start;
-      }
+      .layout { display: grid; grid-template-columns: 1fr 360px; gap: 20px; align-items: start; }
     }
-    @media (min-width: 1060px) {
-      .layout { grid-template-columns: 1fr 400px; }
-    }
+    @media (min-width: 1060px) { .layout { grid-template-columns: 1fr 400px; } }
 
-    /* ─── Card ─── */
     .card {
       border-radius: var(--radius);
       border: 1px solid var(--border);
@@ -229,100 +172,38 @@
       box-shadow: var(--shadow-sm);
       transition: background var(--transition), border-color var(--transition);
     }
-    @media (min-width: 860px) {
-      .card { padding: 24px; }
-    }
+    @media (min-width: 860px) { .card { padding: 24px; } }
 
-    /* ─── Question Card ─── */
+    /* ─── Question ─── */
     .q-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-    .q-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--accent);
-    }
+    .q-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); }
     .q-text {
       font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1.15rem;
-      font-weight: 800;
-      line-height: 1.3;
-      letter-spacing: -0.2px;
-      margin-top: 6px;
+      font-size: 1.15rem; font-weight: 800; line-height: 1.3; margin-top: 6px;
     }
     @media (min-width: 560px) { .q-text { font-size: 1.3rem; } }
-
     .score-box { text-align: right; flex-shrink: 0; }
-    .score-label {
-      font-size: 0.6rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--text-muted);
-    }
-    .score-value {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1.6rem;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -1px;
-    }
+    .score-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); }
+    .score-value { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.6rem; font-weight: 800; line-height: 1; letter-spacing: -1px; }
 
     /* ─── Answers ─── */
-    .answers-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 18px;
-    }
-    @media (min-width: 560px) {
-      .answers-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-    }
+    .answers-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 18px; }
+    @media (min-width: 560px) { .answers-grid { grid-template-columns: 1fr 1fr; gap: 12px; } }
 
     .answer-btn {
-      text-align: left;
-      border-radius: var(--radius-sm);
-      border: 2px solid var(--border);
-      background: var(--bg-secondary);
-      padding: 14px;
-      cursor: pointer;
-      transition: all 0.18s ease;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-family: inherit;
-      color: var(--text-primary);
-      -webkit-appearance: none;
-      min-height: 56px;
-      touch-action: manipulation;
+      text-align: left; border-radius: var(--radius-sm); border: 2px solid var(--border);
+      background: var(--bg-secondary); padding: 14px; cursor: pointer;
+      transition: all 0.18s ease; display: flex; align-items: center; gap: 12px;
+      font-family: inherit; color: var(--text-primary); -webkit-appearance: none;
+      min-height: 56px; touch-action: manipulation;
     }
-    .answer-btn:hover {
-      border-color: var(--accent);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-1px);
-    }
+    .answer-btn:hover { border-color: var(--accent); box-shadow: var(--shadow-md); transform: translateY(-1px); }
     .answer-btn:active { transform: scale(0.98); }
-    .answer-btn.selected {
-      background: var(--selected-bg);
-      border-color: var(--selected-bg);
-      color: var(--selected-text);
-      box-shadow: var(--shadow-md);
-    }
-    .answer-btn.selected .answer-badge {
-      background: var(--selected-badge) !important;
-      color: var(--selected-bg) !important;
-    }
+    .answer-btn.selected { background: var(--selected-bg); border-color: var(--selected-bg); color: var(--selected-text); box-shadow: var(--shadow-md); }
+    .answer-btn.selected .answer-badge { background: var(--selected-badge) !important; color: var(--selected-bg) !important; }
     .answer-btn.selected .answer-hint { opacity: 0.45; }
 
-    .answer-badge {
-      width: 34px; height: 34px;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      font-size: 0.85rem;
-      flex-shrink: 0;
-    }
+    .answer-badge { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-weight: 800; font-size: 0.85rem; flex-shrink: 0; }
     .badge-a { background: rgba(232,93,42,0.13); color: var(--chart-a); }
     .badge-b { background: rgba(59,125,221,0.13); color: var(--chart-b); }
     .badge-c { background: rgba(26,153,86,0.13); color: var(--chart-c); }
@@ -333,263 +214,100 @@
     .answer-hint { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
 
     /* ─── Step Dots ─── */
-    .step-dots {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 18px;
-      padding: 4px 0;
-    }
+    .step-dots { display: flex; justify-content: center; gap: 8px; margin-top: 18px; padding: 4px 0; }
     .step-dot {
-      width: 10px; height: 10px;
-      border-radius: 100px;
-      background: var(--progress-track);
-      transition: all 0.3s ease;
-      cursor: pointer;
-      border: none;
-      -webkit-appearance: none;
-      touch-action: manipulation;
-      padding: 0;
+      width: 10px; height: 10px; border-radius: 100px; background: var(--progress-track);
+      transition: all 0.3s ease; cursor: pointer; border: none; -webkit-appearance: none;
+      touch-action: manipulation; padding: 0;
     }
     .step-dot.active { width: 28px; background: var(--accent); }
     .step-dot.answered { background: var(--correct); }
     .step-dot.answered.active { background: var(--accent); width: 28px; }
 
     /* ─── Footer ─── */
-    .q-footer {
-      margin-top: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    @media (min-width: 480px) {
-      .q-footer { flex-direction: row; align-items: center; justify-content: space-between; }
-    }
-    .feedback {
-      font-size: 0.85rem;
-      font-weight: 700;
-      min-height: 22px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .q-footer { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+    @media (min-width: 480px) { .q-footer { flex-direction: row; align-items: center; justify-content: space-between; } }
+    .feedback { font-size: 0.85rem; font-weight: 700; min-height: 22px; display: flex; align-items: center; gap: 6px; }
     .feedback.correct { color: var(--correct); }
-    .feedback.wrong   { color: var(--wrong); }
-    .feedback.warn    { color: var(--warn); }
+    .feedback.wrong { color: var(--wrong); }
+    .feedback.warn { color: var(--warn); }
 
     .nav-btns { display: flex; gap: 8px; }
     .nav-btn {
-      flex: 1;
-      padding: 12px 16px;
-      border-radius: var(--radius-sm);
-      border: 2px solid var(--border);
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      font-weight: 700;
-      font-size: 0.88rem;
-      cursor: pointer;
-      transition: all 0.18s ease;
-      font-family: inherit;
-      text-align: center;
-      touch-action: manipulation;
-      -webkit-appearance: none;
+      flex: 1; padding: 12px 16px; border-radius: var(--radius-sm); border: 2px solid var(--border);
+      background: var(--bg-secondary); color: var(--text-primary); font-weight: 700;
+      font-size: 0.88rem; cursor: pointer; transition: all 0.18s ease; font-family: inherit;
+      text-align: center; touch-action: manipulation; -webkit-appearance: none;
     }
     @media (min-width: 480px) { .nav-btn { flex: none; padding: 10px 20px; } }
     .nav-btn:active:not(:disabled) { transform: scale(0.96); }
     .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    .nav-btn.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
+    .nav-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
     .nav-btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
 
     /* ─── Sidebar ─── */
     .sidebar-stack { display: flex; flex-direction: column; gap: 16px; }
 
-    /* ─── Live Chart ─── */
+    /* ─── Chart ─── */
     .chart-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .chart-label {
-      font-size: 0.62rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--text-muted);
-    }
-    .chart-title {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1rem;
-      font-weight: 800;
-      margin-top: 1px;
-    }
-    .live-dot {
-      display: inline-block;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--correct);
-      margin-right: 4px;
-      animation: pulse-dot 2s ease infinite;
-    }
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
-    }
+    .chart-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); }
+    .chart-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1rem; font-weight: 800; margin-top: 1px; }
+    .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--correct); margin-right: 4px; animation: pulse-dot 2s ease infinite; }
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
     .live-tag {
-      display: inline-flex;
-      align-items: center;
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: var(--correct);
-      padding: 3px 10px 3px 8px;
-      background: rgba(26,153,86,0.1);
-      border-radius: 100px;
+      display: inline-flex; align-items: center; font-size: 0.68rem; font-weight: 700;
+      color: var(--correct); padding: 3px 10px 3px 8px; background: rgba(26,153,86,0.1); border-radius: 100px;
     }
     [data-theme="dark"] .live-tag { background: rgba(45,212,122,0.12); }
     .chart-wrap { margin-top: 14px; }
 
-    /* Vote count chips under chart */
-    .vote-chips {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
+    .vote-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
     .vote-chip {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      border-radius: 100px;
-      background: var(--bg-tertiary);
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--text-secondary);
-      transition: background var(--transition);
+      display: flex; align-items: center; gap: 5px; padding: 4px 10px;
+      border-radius: 100px; background: var(--bg-tertiary); font-size: 0.72rem;
+      font-weight: 700; color: var(--text-secondary); transition: background var(--transition);
     }
-    .vote-chip-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-    }
-    .total-votes {
-      margin-top: 10px;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-    }
+    .vote-chip-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .total-votes { margin-top: 10px; font-size: 0.72rem; color: var(--text-muted); }
 
     /* ─── Progress ─── */
     .progress-card {
-      border-radius: var(--radius-sm);
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      padding: 16px;
-      transition: background var(--transition), border-color var(--transition);
+      border-radius: var(--radius-sm); background: var(--bg-tertiary); border: 1px solid var(--border);
+      padding: 16px; transition: background var(--transition), border-color var(--transition);
     }
-    .progress-label {
-      font-size: 0.62rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--text-muted);
-    }
-    .progress-track {
-      margin-top: 8px;
-      height: 6px;
-      border-radius: 100px;
-      background: var(--progress-track);
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      border-radius: 100px;
-      background: var(--progress-fill);
-      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .progress-info {
-      margin-top: 8px;
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-      display: flex;
-      justify-content: space-between;
-    }
+    .progress-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); }
+    .progress-track { margin-top: 8px; height: 6px; border-radius: 100px; background: var(--progress-track); overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; border-radius: 100px; background: var(--progress-fill); transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+    .progress-info { margin-top: 8px; font-size: 0.82rem; color: var(--text-secondary); display: flex; justify-content: space-between; }
     .progress-info strong { color: var(--text-primary); font-weight: 700; }
-    .progress-meta {
-      margin-top: 6px;
-      font-size: 0.68rem;
-      color: var(--text-muted);
-    }
+    .progress-meta { margin-top: 6px; font-size: 0.68rem; color: var(--text-muted); }
 
     /* ─── Finish ─── */
-    .finish-card {
-      border: 2px solid var(--accent) !important;
-      background: var(--accent-soft) !important;
-      animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+    .finish-card { border: 2px solid var(--accent) !important; background: var(--accent-soft) !important; animation: pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1); }
     .finish-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
     .finish-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.2rem; font-weight: 800; }
     .finish-sub { color: var(--text-secondary); font-size: 0.82rem; margin-top: 2px; }
-    .finish-score {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--accent);
-      letter-spacing: -1px;
-      line-height: 1;
-    }
-    .finish-score-label {
-      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 1.5px; color: var(--text-muted); text-align: right;
-    }
+    .finish-score { font-family: 'Bricolage Grotesque', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent); letter-spacing: -1px; line-height: 1; }
+    .finish-score-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); text-align: right; }
+    @keyframes pop-in { 0%{transform:scale(0.92);opacity:0} 100%{transform:scale(1);opacity:1} }
 
-    @keyframes pop-in {
-      0% { transform: scale(0.92); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+    /* ─── Connection banner ─── */
+    .conn-banner {
+      padding: 10px 16px; border-radius: var(--radius-sm); font-size: 0.78rem;
+      font-weight: 600; line-height: 1.5; margin-bottom: 16px; display: none;
     }
-
-    /* ─── Setup banner ─── */
-    .setup-banner {
-      margin-bottom: 16px;
-      padding: 14px 18px;
-      border-radius: var(--radius-sm);
-      background: var(--warn);
-      color: #fff;
-      font-size: 0.82rem;
-      font-weight: 600;
-      line-height: 1.5;
-    }
-    .setup-banner a { color: #fff; text-decoration: underline; }
-    .setup-banner code {
-      background: rgba(0,0,0,0.15);
-      padding: 1px 5px;
-      border-radius: 4px;
-      font-size: 0.78rem;
-    }
+    .conn-banner.ok { background: rgba(26,153,86,0.1); color: var(--correct); }
+    .conn-banner.err { background: rgba(217,54,54,0.1); color: var(--wrong); display: block; }
 
     /* ─── Confetti ─── */
-    .confetti-container {
-      position: fixed; inset: 0;
-      pointer-events: none; z-index: 100; overflow: hidden;
-    }
-    .confetti-piece {
-      position: absolute;
-      top: -20px;
-      animation: confetti-fall 3s ease-in forwards;
-    }
-    @keyframes confetti-fall {
-      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-    }
+    .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 100; overflow: hidden; }
+    .confetti-piece { position: absolute; top: -20px; animation: confetti-fall 3s ease-in forwards; }
+    @keyframes confetti-fall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
 
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-    /* Hide on very small widths */
-    @media (max-width: 400px) {
-      .host-badge { display: none; }
-      .header-title { font-size: 0.9rem; }
-    }
+    @media (max-width: 400px) { .host-badge { display: none; } .header-title { font-size: 0.9rem; } }
   </style>
 </head>
 <body>
@@ -609,17 +327,12 @@
   </header>
 
   <main>
-    <div id="setupBanner" class="setup-banner" style="display:none;">
-      ⚠️ Firebase not configured. Replace <code>firebaseConfig</code> in this file with your
-      <a href="https://console.firebase.google.com" target="_blank">Firebase project</a> credentials.
-      The quiz still works locally — votes just won't sync between devices.
-    </div>
+    <div id="connBanner" class="conn-banner"></div>
 
     <div class="layout">
-      <!-- Question Panel -->
-      <div class="card" id="questionCard">
+      <div class="card">
         <div class="q-header">
-          <div style="flex:1; min-width:0;">
+          <div style="flex:1;min-width:0">
             <div class="q-label">Question <span id="qIndex">1</span> of <span id="qTotal">5</span></div>
             <h2 id="qText" class="q-text">—</h2>
           </div>
@@ -628,10 +341,8 @@
             <div class="score-value"><span id="score">0</span>/<span id="scoreTotal">5</span></div>
           </div>
         </div>
-
         <div id="answersGrid" class="answers-grid"></div>
         <div class="step-dots" id="stepDots"></div>
-
         <div class="q-footer">
           <div id="feedback" class="feedback"></div>
           <div class="nav-btns">
@@ -641,7 +352,6 @@
         </div>
       </div>
 
-      <!-- Sidebar -->
       <div class="sidebar-stack">
         <div class="card">
           <div class="chart-header">
@@ -660,19 +370,15 @@
 
         <div class="progress-card">
           <div class="progress-label">Your Progress</div>
-          <div class="progress-track">
-            <div id="progressBar" class="progress-fill"></div>
-          </div>
+          <div class="progress-track"><div id="progressBar" class="progress-fill"></div></div>
           <div class="progress-info">
             <span>Answered: <strong><span id="answeredCount">0</span></strong> / <strong><span id="answeredTotal">5</span></strong></span>
             <span><strong id="pctLabel">0%</strong></span>
           </div>
-          <div class="progress-meta">
-            ID: <span id="clientBadge"></span> · Tab: <span id="tabBadge"></span>
-          </div>
+          <div class="progress-meta">ID: <span id="clientBadge"></span> · Tab: <span id="tabBadge"></span></div>
         </div>
 
-        <div id="endSection" class="card finish-card" style="display:none;">
+        <div id="endSection" class="card finish-card" style="display:none">
           <div class="finish-inner">
             <div>
               <div class="finish-title">🎉 Finished!</div>
@@ -689,6 +395,17 @@
   </main>
 
   <script>
+    /* ═══════════════════════════════════════════════════════════
+       CONFIG — Set your deployed Vercel API URL here
+       ═══════════════════════════════════════════════════════════ */
+    const API_BASE = "";
+    // ↑ Examples:
+    //   ""                                   ← same origin (API + quiz on same Vercel project)
+    //   "https://quiz-api-xyz.vercel.app"    ← separate deployment
+    //   "http://localhost:3000"               ← local dev
+
+    const POLL_INTERVAL = 1500; // ms — how often to refresh the chart
+
     /* ═══════════════════════════════════════════
        THEME
        ═══════════════════════════════════════════ */
@@ -740,87 +457,61 @@
     const clientId = ensureId(localStorage, "teen_summit_client_id");
     const tabId    = ensureId(sessionStorage, "teen_summit_tab_id");
 
-    $("hostBadge").textContent  = "Host: " + host;
-    $("clientBadge").textContent = clientId.slice(0, 8);
-    $("tabBadge").textContent    = tabId.slice(0, 8);
+    $("hostBadge").textContent   = "Host: " + host;
+    $("clientBadge").textContent  = clientId.slice(0, 8);
+    $("tabBadge").textContent     = tabId.slice(0, 8);
 
-    let currentQ  = 0;
-    let answers   = Array.from({ length: QUIZ.questions.length }, () => null);
-    let score     = 0;
-    let chart     = null;
-    let fbReady   = false;
-    let unsubscribe = null;  // Firebase listener cleanup
+    let currentQ = 0;
+    let answers  = Array.from({ length: QUIZ.questions.length }, () => null);
+    let score    = 0;
+    let chart    = null;
+    let pollTimer = null;
+    let apiOnline = true;
 
-    const CHART_VARS   = ['--chart-a','--chart-b','--chart-c','--chart-d'];
+    const CHART_VARS    = ['--chart-a','--chart-b','--chart-c','--chart-d'];
     const BADGE_CLASSES = ['badge-a','badge-b','badge-c','badge-d'];
     const BADGE_LABELS  = ['A','B','C','D'];
 
     function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
     /* ═══════════════════════════════════════════
-       FIREBASE BACKEND (or local fallback)
+       API CALLS
        ═══════════════════════════════════════════ */
-    // Local fallback counts when Firebase isn't configured
-    let localCounts = QUIZ.questions.map(q => Array(q.choices.length).fill(0));
-    let localVoted  = new Set();
-
-    // Returns the DB path for a question's votes
-    function dbPath(q) {
-      return "quiz/" + host + "/q" + q;
+    async function apiGet(qIdx) {
+      const q = QUIZ.questions[qIdx];
+      const url = API_BASE + "/api/stats?host=" + encodeURIComponent(host) + "&q=" + qIdx + "&choiceCount=" + q.choices.length;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error("GET " + r.status);
+      return r.json();
     }
 
-    async function fbVote(qIdx, choice) {
-      if (!fbReady) {
-        // Local fallback
-        const key = qIdx + "-" + tabId;
-        if (localVoted.has(key)) return { counts: localCounts[qIdx], alreadyVoted: true };
-        localCounts[qIdx][choice]++;
-        localVoted.add(key);
-        return { counts: localCounts[qIdx], alreadyVoted: false };
-      }
-
-      const { db, ref, runTransaction, get } = window._fb;
-      const votedKey = "quiz/" + host + "/voted/" + tabId + "/q" + qIdx;
-
-      // Check if already voted
-      const snap = await get(ref(db, votedKey));
-      if (snap.exists()) {
-        const cSnap = await get(ref(db, dbPath(qIdx)));
-        return { counts: cSnap.val() || Array(QUIZ.questions[qIdx].choices.length).fill(0), alreadyVoted: true };
-      }
-
-      // Transaction: increment the chosen answer
-      const countRef = ref(db, dbPath(qIdx));
-      await runTransaction(countRef, (current) => {
-        if (!current) current = Array(QUIZ.questions[qIdx].choices.length).fill(0);
-        current[choice] = (current[choice] || 0) + 1;
-        return current;
+    async function apiVote(qIdx, choice) {
+      const q = QUIZ.questions[qIdx];
+      const r = await fetch(API_BASE + "/api/stats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ host, q: qIdx, choice, choiceCount: q.choices.length, clientId, tabId })
       });
-
-      // Mark as voted
-      await window._fb.set(ref(db, votedKey), true);
-
-      const updatedSnap = await get(countRef);
-      return { counts: updatedSnap.val(), alreadyVoted: false };
+      if (!r.ok) throw new Error("POST " + r.status);
+      return r.json();
     }
 
-    async function fbGetCounts(qIdx) {
-      if (!fbReady) return localCounts[qIdx];
-      const { db, ref, get } = window._fb;
-      const snap = await get(ref(db, dbPath(qIdx)));
-      return snap.val() || Array(QUIZ.questions[qIdx].choices.length).fill(0);
-    }
-
-    // Real-time listener for a specific question
-    function fbListen(qIdx, callback) {
-      if (unsubscribe) { unsubscribe(); unsubscribe = null; }
-      if (!fbReady) return;
-      const { db, ref, onValue } = window._fb;
-      const unsub = onValue(ref(db, dbPath(qIdx)), (snap) => {
-        const counts = snap.val() || Array(QUIZ.questions[qIdx].choices.length).fill(0);
-        callback(counts);
-      });
-      unsubscribe = () => unsub(); // onValue returns an unsubscribe function
+    /* ═══════════════════════════════════════════
+       CONNECTION CHECK
+       ═══════════════════════════════════════════ */
+    async function checkConnection() {
+      try {
+        await apiGet(0);
+        apiOnline = true;
+        $("connBanner").style.display = "none";
+      } catch {
+        apiOnline = false;
+        $("connBanner").className = "conn-banner err";
+        $("connBanner").style.display = "block";
+        $("connBanner").textContent = API_BASE
+          ? "\u26A0\uFE0F Cannot reach API at " + API_BASE + " \u2014 votes won\u2019t sync. Check the URL or deployment."
+          : "\u26A0\uFE0F API not found at this origin. Set API_BASE in the script or deploy the quiz-api project.";
+      }
     }
 
     /* ═══════════════════════════════════════════
@@ -833,14 +524,12 @@
     function answeredCount() { return answers.filter(v => v !== null).length; }
 
     function updateProgress() {
-      const done  = answeredCount();
-      const total = QUIZ.questions.length;
+      const done = answeredCount(), total = QUIZ.questions.length;
       $("answeredCount").textContent = done;
       $("answeredTotal").textContent = total;
       const pct = Math.round((done / total) * 100);
       $("progressBar").style.width = pct + "%";
       $("pctLabel").textContent = pct + "%";
-
       if (done === total) {
         $("endSection").style.display = '';
         $("finalScore").textContent = score;
@@ -855,16 +544,15 @@
        STEP DOTS
        ═══════════════════════════════════════════ */
     function renderStepDots() {
-      const el = $("stepDots");
-      el.innerHTML = "";
+      const el = $("stepDots"); el.innerHTML = "";
       QUIZ.questions.forEach((_, i) => {
-        const dot = document.createElement("button");
-        dot.className = "step-dot";
-        if (i === currentQ) dot.classList.add("active");
-        if (answers[i] !== null) dot.classList.add("answered");
-        dot.setAttribute("aria-label", "Question " + (i + 1));
-        dot.addEventListener("click", async () => { currentQ = i; await render(); });
-        el.appendChild(dot);
+        const d = document.createElement("button");
+        d.className = "step-dot";
+        if (i === currentQ) d.classList.add("active");
+        if (answers[i] !== null) d.classList.add("answered");
+        d.setAttribute("aria-label", "Question " + (i + 1));
+        d.addEventListener("click", async () => { currentQ = i; await render(); });
+        el.appendChild(d);
       });
     }
 
@@ -885,20 +573,15 @@
     }
 
     function updateChart(counts) {
-      const q = QUIZ.questions[currentQ];
-      const labels = q.choices.map((_, i) => BADGE_LABELS[i]);
+      const labels = QUIZ.questions[currentQ].choices.map((_, i) => BADGE_LABELS[i]);
       const colors = chartColors();
 
       if (!chart) {
         chart = new Chart($("countsChart").getContext("2d"), {
           type: "bar",
-          data: {
-            labels,
-            datasets: [{ data: counts, backgroundColor: colors, borderColor: colors, borderWidth: 0, borderRadius: 8, borderSkipped: false, barPercentage: 0.6, categoryPercentage: 0.7 }]
-          },
+          data: { labels, datasets: [{ data: counts, backgroundColor: colors, borderColor: colors, borderWidth: 0, borderRadius: 8, borderSkipped: false, barPercentage: 0.6, categoryPercentage: 0.7 }] },
           options: {
-            responsive: true,
-            maintainAspectRatio: true,
+            responsive: true, maintainAspectRatio: true,
             animation: { duration: 400, easing: 'easeOutQuart' },
             plugins: { legend: { display: false }, tooltip: { backgroundColor: css('--bg-secondary'), titleColor: css('--text-primary'), bodyColor: css('--text-primary'), borderColor: css('--border'), borderWidth: 1, cornerRadius: 8, padding: 10, displayColors: true, callbacks: { label: (ctx) => " " + ctx.parsed.y + " vote" + (ctx.parsed.y !== 1 ? "s" : "") } } },
             scales: {
@@ -916,9 +599,8 @@
       }
 
       // Vote chips
-      const chips = $("voteChips");
+      const chips = $("voteChips"); chips.innerHTML = "";
       const total = counts.reduce((a, b) => a + b, 0);
-      chips.innerHTML = "";
       counts.forEach((c, i) => {
         const chip = document.createElement("span");
         chip.className = "vote-chip";
@@ -928,30 +610,40 @@
       $("totalVotesLabel").textContent = total + " total vote" + (total !== 1 ? "s" : "") + " on this question";
     }
 
+    /* ─── Polling ─── */
+    async function pollCounts() {
+      if (!apiOnline) return;
+      try {
+        const data = await apiGet(currentQ);
+        updateChart(data.counts);
+      } catch { /* silent */ }
+    }
+
+    function startPolling() {
+      stopPolling();
+      pollTimer = setInterval(pollCounts, POLL_INTERVAL);
+    }
+    function stopPolling() {
+      if (pollTimer) clearInterval(pollTimer);
+      pollTimer = null;
+    }
+
     /* ═══════════════════════════════════════════
        CONFETTI
        ═══════════════════════════════════════════ */
     let confettiFired = false;
     function fireConfetti() {
-      if (confettiFired) return;
-      confettiFired = true;
-      const container = document.createElement('div');
-      container.className = 'confetti-container';
-      document.body.appendChild(container);
+      if (confettiFired) return; confettiFired = true;
+      const c = document.createElement('div'); c.className = 'confetti-container'; document.body.appendChild(c);
       const pal = ['#e85d2a','#3b7ddd','#1a9956','#9b59b6','#f1c40f','#e74c3c'];
       for (let i = 0; i < 55; i++) {
-        const p = document.createElement('div');
-        p.className = 'confetti-piece';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.background = pal[Math.floor(Math.random() * pal.length)];
-        p.style.animationDelay = Math.random() * 1.5 + 's';
-        p.style.animationDuration = (2 + Math.random() * 2) + 's';
-        p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-        const s = 6 + Math.random() * 8;
-        p.style.width = s + 'px'; p.style.height = s + 'px';
-        container.appendChild(p);
+        const p = document.createElement('div'); p.className = 'confetti-piece';
+        p.style.left = Math.random()*100+'%'; p.style.background = pal[Math.floor(Math.random()*pal.length)];
+        p.style.animationDelay = Math.random()*1.5+'s'; p.style.animationDuration = (2+Math.random()*2)+'s';
+        p.style.borderRadius = Math.random()>0.5?'50%':'2px';
+        const s = 6+Math.random()*8; p.style.width=s+'px'; p.style.height=s+'px'; c.appendChild(p);
       }
-      setTimeout(() => container.remove(), 5000);
+      setTimeout(() => c.remove(), 5000);
     }
 
     /* ═══════════════════════════════════════════
@@ -960,23 +652,21 @@
     async function render() {
       const q = QUIZ.questions[currentQ];
       $("qIndex").textContent = currentQ + 1;
-      $("qTotal").textContent = QUIZ.questions.length;
-      $("qText").textContent  = q.text;
+      $("qTotal").textContent  = QUIZ.questions.length;
+      $("qText").textContent   = q.text;
 
       computeScore();
       $("score").textContent      = score;
       $("scoreTotal").textContent = QUIZ.questions.length;
 
-      $("prevBtn").disabled   = currentQ === 0;
-      $("nextBtn").textContent = currentQ === QUIZ.questions.length - 1 ? "Finish ✓" : "Next →";
-      $("nextBtn").disabled   = answers[currentQ] === null;
+      $("prevBtn").disabled    = currentQ === 0;
+      $("nextBtn").textContent = currentQ === QUIZ.questions.length - 1 ? "Finish \u2713" : "Next \u2192";
+      $("nextBtn").disabled    = answers[currentQ] === null;
 
       $("feedback").textContent = "";
       $("feedback").className   = "feedback";
 
-      // Answer buttons
-      const grid = $("answersGrid");
-      grid.innerHTML = "";
+      const grid = $("answersGrid"); grid.innerHTML = "";
       q.choices.forEach((text, idx) => {
         const sel = answers[currentQ] === idx;
         const btn = document.createElement("button");
@@ -992,15 +682,14 @@
       renderStepDots();
       updateProgress();
 
-      // Load counts & set up real-time listener
+      // Load chart & start polling
       try {
-        const counts = await fbGetCounts(currentQ);
-        updateChart(counts);
-        // Attach real-time listener
-        fbListen(currentQ, (liveCounts) => { updateChart(liveCounts); });
+        const data = await apiGet(currentQ);
+        updateChart(data.counts);
       } catch {
         updateChart(Array(q.choices.length).fill(0));
       }
+      startPolling();
     }
 
     async function selectAnswer(choiceIdx) {
@@ -1008,9 +697,9 @@
       const wasUnanswered = answers[currentQ] === null;
       answers[currentQ] = choiceIdx;
 
-      if (wasUnanswered) {
+      if (wasUnanswered && apiOnline) {
         try {
-          const result = await fbVote(currentQ, choiceIdx);
+          const result = await apiVote(currentQ, choiceIdx);
           if (result.alreadyVoted) {
             $("feedback").textContent = "\u26A0\uFE0F Already voted on this question.";
             $("feedback").className = "feedback warn";
@@ -1020,9 +709,13 @@
             $("feedback").className = "feedback " + (ok ? "correct" : "wrong");
           }
         } catch {
-          $("feedback").textContent = "\u26A0\uFE0F Vote failed — check Firebase config.";
+          $("feedback").textContent = "\u26A0\uFE0F Vote failed \u2014 check API connection.";
           $("feedback").className = "feedback warn";
         }
+      } else if (wasUnanswered) {
+        const ok = choiceIdx === q.correctIndex;
+        $("feedback").textContent = ok ? "\u2705 Correct! (offline)" : "\u274C Not quite. (offline)";
+        $("feedback").className = "feedback " + (ok ? "correct" : "wrong");
       }
       await render();
     }
@@ -1035,29 +728,9 @@
     });
 
     /* ═══════════════════════════════════════════
-       BOOT — wait for Firebase or fallback
+       BOOT
        ═══════════════════════════════════════════ */
-    function boot() {
-      if (window._fb) {
-        fbReady = true;
-        $("liveTag").style.display = '';
-      } else {
-        fbReady = false;
-        $("setupBanner").style.display = '';
-        $("liveTag").querySelector('.live-dot').style.background = css('--warn');
-      }
-      render().catch(() => {});
-    }
-
-    // Firebase module loads async — wait for it or timeout
-    if (window._fb) {
-      boot();
-    } else {
-      const onReady = () => { boot(); window.removeEventListener('fb-ready', onReady); };
-      window.addEventListener('fb-ready', onReady);
-      // Fallback after 3s if Firebase fails to load
-      setTimeout(() => { if (!fbReady) boot(); }, 3000);
-    }
+    checkConnection().then(() => render());
   </script>
 
 </body>
